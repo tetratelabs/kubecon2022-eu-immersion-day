@@ -20,6 +20,7 @@ theme:
     - navigation.top
     - navigation.instant
     - navigation.tracking
+    - content.code.annotate
 #    - navigation.tabs
 extra_css:
   - css/custom.css
