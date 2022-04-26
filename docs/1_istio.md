@@ -1,1 +1,0 @@
-# 2. Introduction to Istio
