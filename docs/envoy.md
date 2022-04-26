@@ -1,4 +1,5 @@
-# 1. Introduction to Envoy
+# Introduction to Envoy
+
 We'll learn how basic Envoy building blocks are put together into a fully functioning Envoy proxy configuration in this lab. 
 
 We'll start with the minimal configuration needed to get Envoy up and running and then build on it to get it to do more.
@@ -27,13 +28,13 @@ The minimal configuration needed to launch Envoy includes a **listener** and **f
 
 !!! tldr "minimal-config.yaml"
     ```yaml linenums="1"
-    --8<-- "0-envoy-minimal-config.yaml"
+    --8<-- "envoy/minimal-config.yaml"
     ```
 
 Save the above file to `minimal-config.yaml`, and let's run Envoy with this configuration:
 
 ```shell
-func-e run envoy --config minimal-config.yaml &
+func-e run --config minimal-config.yaml &
 ```
 
 ```console
@@ -52,17 +53,22 @@ func-e run envoy --config minimal-config.yaml &
 ```
 
 ??? tip "Running Envoy in background."
-    Adding the character `&` at the end of the command will run Envoy in the background. To bring the Envoy process to the foreground, type `fg` in the terminal. To stop running Envoy used ++ctrl+c++
 
-When Envoy starts, it will print log messages to the console. We can tell how many secrets, clusters, listeners, and other resources Envoy loaded from the log messages. Since we only have a single lister, we'll see that Envoy loaded **0** secrets, **0** clusters, **1** listener.
+    Adding the character `&` at the end of the command will run Envoy in the background. To bring the Envoy process to the foreground, type `fg` in the terminal. To stop the process, use ++ctrl+c++
+
+When Envoy starts, it will print log messages to the console. We can tell how many secrets, clusters, listeners, and other resources Envoy loaded from the log messages. Since we only have a single listener, we'll see that Envoy loaded **0** secrets, **0** clusters, **1** listener.
 
 ??? tip "Envoy Admin Interface."
-    You might have noticed the log message, ' No admin address given, so no admin HTTP server started.` Envoy can be configured to run with an admin interface enabled. This web interface allows you to view Envoy's configuration and runtime information. We'll enable it later on.
+
+    You might have noticed the log message, `No admin address given, so no admin HTTP server started.` Envoy can be configured to run with an admin interface enabled. This web interface allows you to view Envoy's configuration and runtime information. We'll enable it later on.
 
 We can try and send a request to `localhost:10000`, however since we're only listening to an address, but we haven't told Envoy where to route the requests to, there's not much we can expect from the response:
 
-```console
+```shell
 $ curl -v localhost:10000
+```
+
+```console
 *   Trying 127.0.0.1:10000...
 * Connected to localhost (127.0.0.1) port 10000 (#0)
 > GET / HTTP/1.1
@@ -91,37 +97,13 @@ So we'll have a single network filter (HCM) with a single HTTP filter (router), 
 ![](./assets/hcm-filter.png)
 
 
-Let's look at the add the HCM filter to the chain and explain the different pieces of the configuration:
+Review the following Envoy configuration, which adds an HCM filter specification to the chain
+(the :material-plus-circle: symbols reveal explanations of the corresponding section of the configuration):
 
-```yaml
-static_resources:
-  listeners: # (1)
-  - name: listener_0
-    address:
-      socket_address:
-        address: 0.0.0.0
-        port_value: 10000
-    filter_chains:
-    - filters:
-      - name: envoy.filters.network.http_connection_manager # (2)
-        typed_config:
-          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
-          stat_prefix: hello_world_service # (3)
-          http_filters:
-          - name: envoy.filters.http.router # (4)
-          route_config: # (5)
-            name: my_first_route
-            virtual_hosts:
-            - name: my_vhost
-              domains: ["*"]
-              routes:
-              - match:
-                  prefix: "/"
-                direct_response:
-                  status: 200
-                  body:
-                    inline_string: "Hello!"
-```
+!!! tldr "direct-response.yaml"
+    ```yaml linenums="1"
+    --8<-- "envoy/direct-response.yaml"
+    ```
 
 1. The listener section is the same as before; nothing has changed here.
 2. A network filter has a name, `typed_config` section that contains the configuration for the filter. The `@type` field is required and specifies the type of the filter.
@@ -133,22 +115,27 @@ static_resources:
     The HCM contains numerous other fields we can specify and configure. You can check out the complete documentation of the HCM [here](https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto).
 
 
-The most interesting part of the HCM is the `route_config` section. This section contains the route table for the connection manager and it specifies the virtual hosts and routes that Envoy will use to route the requests. The `domains` field inside a virtual host specifies the domain names the virtual host will serve. This is where we could define an actual domain name we want to match against. For example, if we include `hello.com` in the domains array, Envoy will check if the host/authority header of the incoming request matches one of the specified domains and then proceed to the routes section.
+The most interesting part of the HCM is the `route_config` section. This section contains the route table for the connection manager and it specifies the virtual hosts and routes that Envoy will use to route the requests.
 
-We're specifying `*` in the domains, which means we'll match on any host/authority header. Next, we can define one or more routes (note that the first route that matches will be used) by comparing the request properties such as the path, query parameters, headers, etc.
+The `domains` field inside a virtual host specifies the domain names the virtual host will serve. This is where we could define an actual domain name we want to match against. For example, if we include `hello.com` in the domains array, Envoy will check if the host/authority header of the incoming request matches one of the specified domains and then proceed to the routes section.  We're specifying `*` in the domains, which means we'll match on any host/authority header.
+
+Next, we can define one or more routes (note that the first route that matches will be used) by comparing the request properties such as the path, query parameters, headers, etc.
 
 Once the route is matched, we can specify the cluster that Envoy will forward the request to. Later we'll use an actual cluster, but for this example, we're using a route called [DirectResponseAction](https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/route/v3/route_components.proto#envoy-v3-api-msg-config-route-v3-directresponseaction) (`direct_response` field) that returns a status and body we specify.
 
-Let's save the above configuration to `envoy-direct-response.yaml` and start Envoy:
+Save the above configuration to `direct-response.yaml` and start Envoy:
 
 ```shell
-func-e run -c envoy-direct-response.yaml &
+func-e run -c direct-response.yaml &
 ```
 
 After Envoy starts, we can send a request to `localhost:10000` and we'll get back the response as specified in the `direct_response` field:
 
 ```shell
 $ curl -v localhost:10000
+```
+
+```console
 *   Trying 127.0.0.1:10000...
 * Connected to localhost (127.0.0.1) port 10000 (#0)
 > GET / HTTP/1.1
@@ -167,13 +154,13 @@ $ curl -v localhost:10000
 Hello!
 ```
 
-You can stop running Envoy by pressing ++ctrl+c++.
+Run `fg` to bring the Envoy process to the foreground, followed by ++ctrl+c++ to interrupt and terminate the process.
 
 ## Defining endpoints
 
-Using a direct response (`direct_response`) when sending a request is an easy way to get started. However, it's not realistic. Typically, we want to route the request to endpoints. In Envoy, similar endpoints (e.g., multiple instances of the same service) are part of a logical group called **clusters**. Grouping the endpoints in such a way allows us to define the load balancing policies for the group and the locality of endpoints.
+Using a direct response when sending a request is an easy way to get started. However, it's not realistic. Typically, we want to route the request to endpoints. In Envoy, similar endpoints (e.g., multiple instances of the same service) are part of a logical group called [clusters](https://www.envoyproxy.io/docs/envoy/latest/intro/life_of_a_request#terminology){target=_blank}. Grouping the endpoints in such a way allows us to define the load balancing policies for the group and the locality of endpoints.
 
-Here's an example of a cluster called `hello_world_cluster` with two endpoints - both running on `127.0.0.1`, one listening on port `8000` and the other one listening on port `9000`:
+Here's an example of a cluster called `hello_world_cluster` with two endpoints - both running on `127.0.0.1`, one listening on port `8100` and the other one listening on port `8200`:
 
 ```yaml
 clusters:
@@ -186,12 +173,12 @@ clusters:
           address:
             socket_address:
               address: 127.0.0.1
-              port_value: 8000
+              port_value: 8100
       - endpoint:
           address:
             socket_address:
               address: 127.0.0.1
-              port_value: 9000
+              port_value: 8200
 ```
 
 The clusters in the Envoy configuration are declared in the `clusters` section, just like we declared the listeners in a separate field. The cluster section is also where we can configure health checks, circuit breakers, outlier detection, and other configuration settings.
@@ -200,10 +187,10 @@ With the endpoints defined in clusters, we can combine the previous configuratio
 
 !!! tldr "clusters.yaml"
     ```yaml linenums="1"
-    --8<-- "0-envoy-clusters.yaml"
+    --8<-- "envoy/clusters.yaml"
     ```
 
-Let's save the above YAML to `clusters.yaml` file and run Envoy:
+Save the above YAML to a file name `clusters.yaml` and run Envoy:
 
 ```shell
 func-e run -c clusters.yaml &
@@ -211,30 +198,42 @@ func-e run -c clusters.yaml &
 
 If we send a request to `localhost:10000` we'll get back an error:
 
+```shell
+curl localhost:10000
+```
+
 ```console
-$ curl localhost:10000
 [2022-04-15 18:19:18.006][1067][warning][client] [source/common/http/codec_client.cc:122] [C1] Connection is closed by peer during connecting.
 upstream connect error or disconnect/reset before headers. reset reason: connection failure, transport failure reason: delayed connect error: 111
 ```
 
-We get an error because nothing is listening on ports `8000` and `9000`, which are the two endpoints we referenced in the cluster. Let's just run two instances of the `httpbin` service:
+We get an error because nothing is listening on ports `8100` and `8200`, which are the two endpoints we referenced in the cluster. Let's just run two instances of the `httpbin` service:
 
 ```shell
-docker run -d -p 8000:80 kennethreitz/httpbin
-docker run -d -p 9000:80 kennethreitz/httpbin
+docker run -d -p 8100:80 kennethreitz/httpbin
+```
+
+```shell
+docker run -d -p 8200:80 kennethreitz/httpbin
+```
+
+```shell
+docker ps
 ```
 
 ```console
-$ docker ps
 CONTAINER ID   IMAGE                  COMMAND                  CREATED         STATUS         PORTS                  NAMES
-4b2beee7fec2   kennethreitz/httpbin   "gunicorn -b 0.0.0.0…"   3 seconds ago   Up 2 seconds   0.0.0.0:9000->80/tcp   condescending_meninsky
-9af09f693a84   kennethreitz/httpbin   "gunicorn -b 0.0.0.0…"   5 seconds ago   Up 2 seconds   0.0.0.0:8000->80/tcp   reverent_kowalevski
+4b2beee7fec2   kennethreitz/httpbin   "gunicorn -b 0.0.0.0…"   3 seconds ago   Up 2 seconds   0.0.0.0:8100->80/tcp   condescending_meninsky
+9af09f693a84   kennethreitz/httpbin   "gunicorn -b 0.0.0.0…"   5 seconds ago   Up 2 seconds   0.0.0.0:8200->80/tcp   reverent_kowalevski
 ```
 
 Now that we have two instances of the `httpbin` service running, we can send a request to `localhost:10000` and we'll get back the response:
 
 ```shell
-$ curl localhost:10000/headers
+curl localhost:10000/headers
+```
+
+```console
 {
   "headers": {
     "Accept": "*/*",
@@ -245,7 +244,7 @@ $ curl localhost:10000/headers
 }
 ```
 
-To see Envoy is load balancing between the two endpoints, we can stop one of the containers (e.g. `docker stop <container_id>`) and then send a couple of requests. You'll notice we'll either get back a connect error or a response from one of the running services.
+To see that Envoy is load-balancing between the two endpoints, we can stop one of the containers (e.g. `docker stop <container_id>`) and then send a couple of requests. You'll notice we'll either get back a connect error or a response from one of the running services.
 
 ## Routing requests
 
@@ -264,7 +263,7 @@ clusters:
           address:
             socket_address:
               address: 127.0.0.1
-              port_value: 8000
+              port_value: 8100
 - name: second_cluster
   load_assignment:
     cluster_name: second_cluster
@@ -274,7 +273,7 @@ clusters:
           address:
             socket_address:
               address: 127.0.0.1
-              port_value: 9000
+              port_value: 8200
 ```
 
 Once we have more than one cluster, we have to decide how we want to split the traffic between them. There are multiple ways we can configure traffic routing. Here are a couple of examples:
@@ -316,7 +315,7 @@ We can put everything together now for the final example:
 
 !!! tldr "routing.yaml"
     ```yaml linenums="1"
-    --8<-- "0-envoy-routing.yaml"
+    --8<-- "envoy/routing.yaml"
     ```
 
 Save the above YAML to `routing.yaml` and run Envoy:
@@ -329,7 +328,10 @@ func-e run -c routing.yaml &
 Let's try sending the request to `localhost:10000/one` - we'll get back the following response:
 
 ```shell
-$ curl localhost:10000/one
+curl localhost:10000/one
+```
+
+```console
 {
   "origin": "172.18.0.1"
 }
@@ -338,7 +340,10 @@ $ curl localhost:10000/one
 Similarly, if we send a request to `localhost:10000/two` we'll get back the user agent information:
 
 ```shell
-$ curl localhost:10000/two
+curl localhost:10000/two
+```
+
+```console
 {
   "user-agent": "curl/7.74.0"
 }

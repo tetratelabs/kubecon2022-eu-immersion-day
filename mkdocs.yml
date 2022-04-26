@@ -25,9 +25,9 @@ theme:
 extra_css:
   - css/custom.css
 nav:
-  - 0_envoy.md
-  - 1_istio.md
-  - 2_wasm.md
+  - envoy.md
+  - istio.md
+  - wasm.md
   - Summary: summary.md
 markdown_extensions:
   - admonition

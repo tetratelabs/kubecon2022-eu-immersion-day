@@ -20,15 +20,9 @@ static_resources:
               domains: ["*"]
               routes:
               - match:
-                  path: "/one"
+                  prefix: "/"
                 route:
-                  prefix_rewrite: "/ip"
                   cluster: hello_world_cluster
-              - match:
-                  path: "/two"
-                route:
-                  prefix_rewrite: "/user-agent"
-                  cluster: second_cluster
   clusters:
   - name: hello_world_cluster
     connect_timeout: 5s
@@ -40,15 +34,9 @@ static_resources:
             address:
               socket_address:
                 address: 127.0.0.1
-                port_value: 8000
-  - name: second_cluster
-    connect_timeout: 5s
-    load_assignment:
-      cluster_name: second_cluster
-      endpoints:
-      - lb_endpoints:
+                port_value: 8100
         - endpoint:
             address:
               socket_address:
                 address: 127.0.0.1
-                port_value: 9000
+                port_value: 8200

@@ -1,4 +1,4 @@
-# 3. Extending Envoy and Istio with Wasm
+# Extending Envoy and Istio with Wasm
 
 We'll create a minimal Wasm extension in this lab and run it locally using Envoy.
 
@@ -12,7 +12,7 @@ go mod init wasm-extension
 Next, let's create the `main.go` file where the code for our Wasm extension will live. We'll start with the minimal code:
 
 ```go linenums="1" title="main.go"
---8<-- "minimal_main.go"
+--8<-- "wasm/minimal_main.go"
 ```
 
 Save the above to `main.go`.
@@ -34,7 +34,7 @@ We'll use `func-e` to run a local Envoy instance to test our built extension.
 First, we need an Envoy config that will configure the extension:
 
 ```yaml linenums="1" title="envoy.yaml"
---8<-- "envoy.yaml"
+--8<-- "wasm/envoy.yaml"
 ```
 
 Save the above to `envoy.yaml`.
@@ -229,7 +229,7 @@ func (ctx *httpContext) OnHttpResponseHeaders(numHeaders int, endOfStream bool) 
 
 ??? note "Complete main.go file"
     ```go linenums="1" title="main.go"
-    --8<-- "config_main.go"
+    --8<-- "wasm/config_main.go"
     ```
 
 Let's rebuild the extension again:
@@ -263,7 +263,7 @@ We also have to update the config file to include additional headers in the filt
 
 ??? note "Complete envoy.yaml file"
     ```go linenums="1" title="envoy.yaml"
-    --8<-- "envoy-config.yaml"
+    --8<-- "wasm/envoy-config.yaml"
     ```
 
 We can re-run the Envoy proxy with the updated configuration using `func-e run -c envoy.yaml &`.
@@ -325,7 +325,7 @@ We can now create the WasmPlugin resource that tells Envoy where to download the
 
 ???+ note "WasmPlugin resource"
     ```go linenums="1" title="plugin.yaml"
-    --8<-- "plugin.yaml"
+    --8<-- "wasm/plugin.yaml"
     ```
 
 You should update the `REPOSITORY` value in the `url` field before saving the above YAML to `plugin.yaml` and deploying it using `kubectl apply -f plugin.yaml`.
