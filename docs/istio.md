@@ -63,7 +63,7 @@ To deploy Envoy as a sidecar, we will employ the convenient [automatic sidecar i
 
 ## Turn on Envoy access logging
 
-Turn on access logging in Envoy, by applying the following Telemtry custom resource:
+Turn on access logging in Envoy, by applying the following Telemetry custom resource:
 
 !!! tldr "access-logging.yaml"
     ```yaml linenums="1"
