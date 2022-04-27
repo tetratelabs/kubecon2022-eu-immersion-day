@@ -363,7 +363,7 @@ Verify that requests to `/one` are routed to the `httpbin` deployment's `/ip` en
 
     ```shell
     SLEEP_POD=$(kubectl get pod -l app=sleep -ojsonpath='{.items[0].metadata.name}')
-    kubectl exec $SLEEP_POD -it -- curl httpbin:8000/one
+    kubectl exec $SLEEP_POD -it -- curl httpbin:8000/two
     ```
 
 ## Using an Ingress Gateway
