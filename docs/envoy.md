@@ -1,12 +1,12 @@
 # Introduction to Envoy
 
-We'll learn how basic Envoy building blocks are put together into a fully functioning Envoy proxy configuration in this lab. 
+In this lab, we will learn how basic Envoy building blocks are composed into a fully functioning Envoy proxy configuration.
 
-We'll start with the minimal configuration needed to get Envoy up and running and then build on it to get it to do more.
+We begin with a minimal configuration needed to get Envoy up and running, and then build on it to get it to do more.
 
 >>SLIDES: explain the terminology -- specifically clusters and endpoints
-## Prerequisites
 
+## Prerequisites
 
 We'll use the [func-e CLI](https://func-e.io/) to download and run the Envoy proxy automatically. To install func-e, run the following command:
 
@@ -348,3 +348,7 @@ curl localhost:10000/two
   "user-agent": "curl/7.74.0"
 }
 ```
+
+## Summary
+
+Equipped with the basics of Envoy, in the next lab we turn our attention to Istio, of which Envoy is a crucial building block.
