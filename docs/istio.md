@@ -53,7 +53,7 @@ To deploy Envoy as a sidecar, we will employ the convenient [automatic sidecar i
     kubectl get ns -Listio-injection
     ```
 
-1. When using `kubectl` to apply a deployment, Istio employs a Kubernetes [admission controller](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/) to augment the pod specification to bundle Envoy into a sidecar container named `istio-proxy`.
+1. When using `kubectl` to apply a deployment, Istio employs a Kubernetes [admission controller](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/) to augment the pod specification to bundle Envoy into a sidecar container.
 
     Verify this:  observe the presence of the istio sidecar injector in your Kubernetes cluster:
 
@@ -84,7 +84,7 @@ As in the previous lab, we use [httpbin](https://httpbin.org/) as the applicatio
 
 Istio conveniently provides httpbin as one of its [sample applications](https://github.com/istio/istio/tree/master/samples/httpbin).
 
-For convenience, you will find copy of the [`httpbin.yaml`](https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml) Kubernetes manifest in the `artifacts` folder.
+For convenience, you will find a copy of the [`httpbin.yaml`](https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml) Kubernetes manifest in the `artifacts` folder.
 
 Deploy httpbin to the default namespace:
    
@@ -103,7 +103,7 @@ kubectl apply -f httpbin.yaml
 kubectl scale deploy httpbin --replicas=2
 ```
 
-Having two pods will give us the two endpoints to load-balance against.
+Having two pods will give us the two endpoints to load-balance across.
 
 ### Deploy the `sleep` client
 
@@ -142,7 +142,7 @@ Requests from `sleep` are load-balanced across the two `httpbin` endpoints.
 
 !!! note
 
-    In the commands below, we capture the names of each of the two `httpbin` pods and of the `sleep` pod independently for clarity.
+    In the commands below, we capture the names of each of the two `httpbin` pods and of the `sleep` pod independently, for clarity.
 
 1. Tail the logs of each Envoy sidecar on the receiving end.
 
