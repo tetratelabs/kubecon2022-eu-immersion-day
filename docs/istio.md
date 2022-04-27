@@ -480,7 +480,10 @@ It's worthwhile taking a close look at the output.  Below I have removed some of
         ...
 ```
 
-How does the above compare to the hand-written configuration from the previous lab?
+!!! check "Challenge"
+
+    Review the hand-written configuration from the previous lab.
+    How does it compare to the above generated configuration?
 
 ## Summary
 
