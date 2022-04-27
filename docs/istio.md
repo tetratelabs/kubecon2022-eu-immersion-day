@@ -418,8 +418,8 @@ Study the following manifest:
 
 Note:
 
-1. the additional `gateways` field ensures that the virtual service binds to the ingress gateway.
-1. the `hosts` field has been relaxed to match any request coming in through the load balancer.
+1. The additional `gateways` field ensures that the virtual service binds to the ingress gateway.
+1. The `hosts` field has been relaxed to match any request coming in through the load balancer.
 
 Apply the manifest:
 
