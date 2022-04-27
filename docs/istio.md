@@ -233,7 +233,7 @@ Note the following:
 
 All of the above facts should match with what you learned in the [Introduction to Envoy](../envoy).
 
-### The routes configuration
+#### Routes
 
 Similar to the `proxy-config listener` command, the high-level overview for routes is the following command:
 
@@ -264,7 +264,7 @@ The output will show the route configuration, including this section:
 
 ..which states that calls to the httpbin service should be routed to the cluster named `outbound|8000||httpbin.default.svc.cluster.local`.
 
-### The clusters configuration
+#### Clusters
 
 We can view all Envoy clusters with:
 
@@ -278,7 +278,7 @@ And specifically look at the configuration for the httpbin cluster with:
 istioctl proxy-config cluster $SLEEP_POD --fqdn httpbin.default.svc.cluster.local -o yaml
 ```
 
-### The endppoints configuration
+#### Endppoints
 
 More importantly, we'd like to know what are the endpoints backing the `httpbin` cluster.
 
@@ -292,7 +292,7 @@ Verify that the endpoint addresses from the output in fact match the pod IPs of 
 kubectl get pod -l app=httpbin -o wide
 ```
 
-## Scenarios 2: Two clusters with routing configuration
+## Scenario 2: Two clusters with routing configuration
 
 Scale back the `httpbin` deployment to a single replica:
 
@@ -313,6 +313,8 @@ The following manifest is a separate deployment of `httpbin`, named httpbin-2.
 kubectl apply -f httpbin-2.yaml
 ```
 
+### Apply the routing configuration: `VirtualService`
+
 If you recall, back in the Envoy lab, you wrote Envoy routing configuration involving path prefixes and rewrites.
 
 In Istio, the routing configuration is exposed as a Kubernetes custom resource of kind `VirtualService`.
@@ -331,6 +333,8 @@ Apply the manifest:
 ```shell
 kubectl apply -f virtual-service.yaml
 ```
+
+### Verify
 
 Verify that requests to `/one` are routed to the `httpbin` deployment's `/ip` endpoint, and that requests to `/two` are routed to the `httpbin-2` deployment's `/user-agent` endpoint.
 
