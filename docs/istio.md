@@ -33,6 +33,8 @@ In Istio, Envoy proxy instances are present in two distinct locations:
 1. In the heart of the mesh: they are bundled as sidecar containers in the pods that run our workloads.
 1. At the edge: as standalone gateways handling ingress and egress traffic in and out of the mesh.
 
+![Istio architecture](arch.svg)
+
 An ingress gateway is deployed as part of the installation of Istio.  It resides in the `istio-system` namespace.  Verify this:
 
 ```shell
