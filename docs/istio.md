@@ -294,17 +294,78 @@ kubectl get pod -l app=httpbin -o wide
 
 ## Scenarios 2: Two clusters with routing configuration
 
-- Deploy a second httpbin service
-- Define the routing configuration using a virtual service
+Scale back the `httpbin` deployment to a single replica:
 
-Observe requests to `/one` go to the first cluster's `/ip` endpoint
-Observe requests to `/two` go to the second cluter's `/user-agent` endpoint
+```shell
+kubectl scale deploy httpbin --replicas=1
+```
 
-Observe the configuration of the Envoy in the sleep pod: listeners, clusters, endpoints, and routes.
+### Deploy a second httpbin service
 
+The following manifest is a separate deployment of `httpbin`, named httpbin-2.
+
+??? tldr "httpbin-2.yaml"
+    ```yaml linenums="1"
+    --8<-- "istio/httpbin-2.yaml"
+    ```
+
+```shell
+kubectl apply -f httpbin-2.yaml
+```
+
+If you recall, back in the Envoy lab, you wrote Envoy routing configuration involving path prefixes and rewrites.
+
+In Istio, the routing configuration is exposed as a Kubernetes custom resource of kind `VirtualService`.
+
+Study the manifest shown below:
+
+!!! tldr "virtual-service.yaml"
+    ```yaml linenums="1"
+    --8<-- "istio/virtual-service.yaml"
+    ```
+
+It states: when making requests to the `httpbin` host, route the request to either the first destination (httpbin) or the second (httpbin-2), as a function of the path prefix in the request url.
+
+Apply the manifest:
+
+```shell
+kubectl apply -f virtual-service.yaml
+```
+
+Verify that requests to `/one` are routed to the `httpbin` deployment's `/ip` endpoint, and that requests to `/two` are routed to the `httpbin-2` deployment's `/user-agent` endpoint.
+
+1. Tail the logs of the httpbin pod's istio-proxy container:
+
+    ```shell
+    HTTPBIN_POD=$(kubectl get pod -l app=httpbin -ojsonpath='{.items[0].metadata.name}')
+    kubectl logs --follow HTTPBIN_POD -c istio-proxy
+    ```
+
+1. In a separate terminal, tail the httpbin-2 pod's logs:
+
+    ```shell
+    HTTPBIN2_POD=$(kubectl get pod -l app=httpbin-2 -ojsonpath='{.items[0].metadata.name}')
+    kubectl logs --follow HTTPBIN2_POD -c istio-proxy
+    ```
+
+1. Separately, make repeated calls to the `/one` endpoint from the sleep pod:
+
+    ```shell
+    SLEEP_POD=$(kubectl get pod -l app=sleep -ojsonpath='{.items[0].metadata.name}')
+    kubectl exec $SLEEP_POD -it -- curl httpbin:8000/one
+    ```
+
+1. Likewise, make repeated calls to the `/two` endpoint from the sleep pod:
+
+    ```shell
+    SLEEP_POD=$(kubectl get pod -l app=sleep -ojsonpath='{.items[0].metadata.name}')
+    kubectl exec $SLEEP_POD -it -- curl httpbin:8000/one
+    ```
 
 ## Using an Ingress Gateway
 
+The above scenario 
+- get the gateway ip address
 - configure the gateway
 - bind the virtual service to the gateway
 - test the endpoints
