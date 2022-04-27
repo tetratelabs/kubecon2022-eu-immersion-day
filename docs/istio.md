@@ -364,17 +364,124 @@ Verify that requests to `/one` are routed to the `httpbin` deployment's `/ip` en
 
 ## Using an Ingress Gateway
 
-The above scenario 
-- get the gateway ip address
-- configure the gateway
-- bind the virtual service to the gateway
-- test the endpoints
-- inspect the gateway configuration.
+Rather than configure routing for internal mesh clients, it's more interesting to configure an ingress gateway.
+
+Indeed when installing Istio, an ingress gateway was provisioned alongside `istiod`.  Verify this:
+
+```shell
+kubectl get pod -n istio-system
+```
+
+Note that the gateway has a corresponding LoadBalancer type service:
+
+```shell
+kubectl get svc -n istio-system
+```
+
+Capture the gateway's external IP address:
+
+```shell
+GATEWAY_IP=$(kubectl get service istio-ingressgateway -n istio-system -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
+
+Visit the gateway ip address in your web browser; you should get back a "connection refused" message.
+
+### Configure the gateway
+
+To expose HTTP port 80, apply the following gateway manifest:
+
+!!! tldr "gateway.yaml"
+    ```yaml linenums="1"
+    --8<-- "istio/gateway.yaml"
+    ```
+
+The wildcard value for the `hosts` field ensures a match if the request is made directly to the "raw" gateway IP address.
+
+```shell
+kubectl apply -f gateway.yaml
+```
+
+Try once more to access the gateway IP address.  It should no longer return "connection refused."  Instead you should get a 404 (not found).
+
+### Bind the virtual service to the gateway
+
+Study the following manifest:
+
+!!! tldr "gw-virtual-service.yaml"
+    ```yaml linenums="1"
+    --8<-- "istio/gw-virtual-service.yaml"
+    ```
+
+Note:
+
+1. the additional `gateways` field ensures that the virtual service binds to the ingress gateway.
+1. the `hosts` field has been relaxed to match any request coming in through the load balancer.
+
+Apply the manifest:
+
+```shell
+kubectl apply -f gw-virtual-service.yaml
+```
+
+### Test the endpoints
+
+The raw gateway IP address will still return a 404.
+
+However, the `/one` and `/two` endpoints should now be functional, and return the ip and user-agent responses from each httpbin deployment, respectively.
+
+### Inspect the Gateway's Envoy configuration
+
+1. Review the listeners configuration.
+
+    ```shell
+    istioctl proxy-config listener deploy/istio-ingressgateway.istio-system
+    ```
+
+1. Next study the routes configuration.
+
+    ```shell
+    istioctl proxy-config route deploy/istio-ingressgateway.istio-system
+    ```
+
+1. Zero-in on the routes configuration named `http.8080`
+
+    ```shell
+    istioctl proxy-config route deploy/istio-ingressgateway.istio-system --name http.8080 -o yaml
+    ```
+
+It's worthwhile taking a close look at the output.  Below I have removed some of the noise to highlight the most salient parts:
+
+```yaml
+    ...
+    routes:
+    - ...
+      match:
+        ...
+        prefix: /one
+      ...
+      route:
+        cluster: outbound|8000||httpbin.default.svc.cluster.local
+        ...
+        prefixRewrite: /ip
+        ...
+    - ...
+      match:
+        ...
+        prefix: /two
+      ...
+      route:
+        cluster: outbound|8000||httpbin-2.default.svc.cluster.local
+        ...
+        prefixRewrite: /user-agent
+        ...
+```
+
+How does the above compare to the hand-written configuration from the previous lab?
 
 ## Summary
 
 In comparison to having to configure Envoy proxies manually, Istio provides a mechanism to configure Envoy proxies with much less effort.
-It draws on information from the environment: awareness of running workloads, service discovery, provide the inputs necessary to derive Envoy's clusters and listeners configurations automatically.
+It draws on information from the environment: awareness of running workloads (service discovery) provides the inputs necessary to derive Envoy's clusters and listeners configurations automatically.
 
 Istio Custom Resource Definitions complement and complete the picture by providing mechanisms to configure routing rules, authorization policies and more.
 
