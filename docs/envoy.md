@@ -34,7 +34,7 @@ The minimal configuration needed to launch Envoy includes a **listener** and **f
 Save the above file to `minimal-config.yaml`, and let's run Envoy with this configuration:
 
 ```shell
-func-e run --config-yaml minimal-config.yaml &
+func-e run --config-path minimal-config.yaml &
 ```
 
 ```console
