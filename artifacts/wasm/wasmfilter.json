@@ -1,0 +1,20 @@
+...
+"default_filter_chain": {
+    "filters": [
+      {
+      "name": "istio.stats",
+      "typed_config": {
+        "@type": "type.googleapis.com/udpa.type.v1.TypedStruct",
+        "type_url": "type.googleapis.com/envoy.extensions.filters.network.wasm.v3.Wasm",
+        "value": {
+        "config": {
+          "root_id": "stats_outbound",
+          "vm_config": {
+          "vm_id": "tcp_stats_outbound",
+          "runtime": "envoy.wasm.runtime.null",
+          "code": {
+            "local": {
+            "inline_string": "envoy.wasm.stats"
+            }
+          }
+...

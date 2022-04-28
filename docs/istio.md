@@ -30,8 +30,8 @@ Follow [these instructions](https://tetratelabs.github.io/istio-0to60/install/) 
 
 In Istio, Envoy proxy instances are present in two distinct locations:
 
-1. In the heart of the mesh: they are bundled as sidecar containers in the pods that run our workloads.
-1. At the edge: as standalone gateways handling ingress and egress traffic in and out of the mesh.
+1. **In the heart of the mesh**: they are bundled as sidecar containers in the pods that run our workloads.
+1. **At the edge**: as standalone gateways handling ingress and egress traffic in and out of the mesh.
 
 ![Istio architecture](arch.svg)
 
@@ -173,6 +173,8 @@ Requests from `sleep` are load-balanced across the two `httpbin` endpoints.
     kubectl exec $SLEEP_POD -it -- curl httpbin:8000/html
     ```
 
+You can stop following the logs by pressing ++ctrl+c++ and close the first two terminal windows.
+
 ### Behind the curtain
 
 The Istio CLI, `istioctl`, provides a handy subcommand `proxy-config`, that will help us get at the configuration of the Envoy proxy in the sleep pod: its listeners, routes, clusters, and endpoints.
@@ -191,20 +193,19 @@ Run the following command:
 istioctl proxy-config listener $SLEEP_POD
 ```
 
-The output displays a high-level overview of the Envoy listener configuration.
-From this output we learn that Envoy has multiple listeners, listening on multiple ports.
+The output displays a high-level overview of the Envoy listener configuration. From this output we learn that Envoy has multiple listeners, listening on multiple ports.
 
-Some listeners handle inbound requests, for example there's a health endpoint on port 15021, and a prometheus scrape endpoint on port 15090.
+Some listeners handle inbound requests, for example there's a health endpoint on port `15021`, and a prometheus scrape endpoint on port `15090`.
 
-The listener on port 8000 (which matches the port number of the httpbin cluster IP service) is responsible for handling requests bound to the `httpbin` service.
+The listener on port `8000` (which matches the port number of the httpbin cluster IP service) is responsible for handling requests bound to the `httpbin` service.
 
-To see the full listener section of the Envoy configuration for port 8000, run:
+To see the full listener section of the Envoy configuration for port `8000`, run:
 
 ```shell
-istioctl proxy-config listener $SLEEP_POD --port 8000 -o yaml
+istioctl proxy-config listener $SLEEP_POD --port 8000 -o yaml > listeners.yaml
 ```
 
-The output is voluminous (~ 200+ lines).
+The output is voluminous (~ 200+ lines) and that's why we piped it into the `listeners.yaml` file.
 
 Note the following:
 
@@ -243,7 +244,7 @@ Similar to the `proxy-config listener` command, the high-level overview for rout
 istioctl proxy-config route $SLEEP_POD
 ```
 
-Zero-in on the route configuration for port 8000:
+Zero-in on the route configuration for port `8000`:
 
 ```shell
 istioctl proxy-config route $SLEEP_POD --name 8000 -o yaml
@@ -264,7 +265,7 @@ The output will show the route configuration, including this section:
     ...
 ```
 
-..which states that calls to the httpbin service should be routed to the cluster named `outbound|8000||httpbin.default.svc.cluster.local`.
+The above output states that calls to the httpbin service should be routed to the cluster named `outbound|8000||httpbin.default.svc.cluster.local`.
 
 #### Clusters
 
@@ -280,7 +281,7 @@ And specifically look at the configuration for the httpbin cluster with:
 istioctl proxy-config cluster $SLEEP_POD --fqdn httpbin.default.svc.cluster.local -o yaml
 ```
 
-#### Endppoints
+#### Endpoints
 
 More importantly, we'd like to know what are the endpoints backing the `httpbin` cluster.
 
@@ -344,14 +345,14 @@ Verify that requests to `/one` are routed to the `httpbin` deployment's `/ip` en
 
     ```shell
     HTTPBIN_POD=$(kubectl get pod -l app=httpbin -ojsonpath='{.items[0].metadata.name}')
-    kubectl logs --follow HTTPBIN_POD -c istio-proxy
+    kubectl logs --follow $HTTPBIN_POD -c istio-proxy
     ```
 
 1. In a separate terminal, tail the httpbin-2 pod's logs:
 
     ```shell
     HTTPBIN2_POD=$(kubectl get pod -l app=httpbin-2 -ojsonpath='{.items[0].metadata.name}')
-    kubectl logs --follow HTTPBIN2_POD -c istio-proxy
+    kubectl logs --follow $HTTPBIN2_POD -c istio-proxy
     ```
 
 1. Separately, make repeated calls to the `/one` endpoint from the sleep pod:
