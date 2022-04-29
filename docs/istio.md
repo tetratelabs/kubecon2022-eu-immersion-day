@@ -26,6 +26,16 @@ In Istio, Envoy proxies are configured indirectly, using a combination of:
 
 Follow [these instructions](https://tetratelabs.github.io/istio-0to60/install/){target=_blank} to install Istio in your environment.
 
+## Download lab artifacts
+
+Use the following command to download (to a subdirectory named `istio-artifacts`) a copy of all yaml manifests necessary for this lab.
+
+```shell
+git clone https://github.com/tetratelabs/kubecon2022-eu-immersion-day.git && \
+  mv kubecon2022-eu-immersion-day/artifacts/istio ./istio-artifacts && \
+  rm -rf kubecon2022-eu-immersion-day
+```
+
 ## Where are the Envoys?
 
 In Istio, Envoy proxy instances are present in two distinct locations:
