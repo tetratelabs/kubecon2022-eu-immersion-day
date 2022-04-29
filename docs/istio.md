@@ -24,7 +24,7 @@ In Istio, Envoy proxies are configured indirectly, using a combination of:
 
 ## Install Istio
 
-Follow [these instructions](https://tetratelabs.github.io/istio-0to60/install/) to install Istio in your environment.
+Follow [these instructions](https://tetratelabs.github.io/istio-0to60/install/){target=_blank} to install Istio in your environment.
 
 ## Where are the Envoys?
 
@@ -527,6 +527,99 @@ It's worthwhile taking a close look at the output.  Below I have removed some of
 
     Review the hand-written configuration from the previous lab.
     How does it compare to the above generated configuration?
+
+## Beyond traffic management
+
+The ability to control load-balancing and routing are but one of the features of Istio.
+
+Istio supports additional and important cross-cutting concerns, including security and observability.
+
+### Security
+
+With Istio, deployed workloads are automatically assigned a secure identity.
+
+Istio provides the [`PeerAuthentication`](https://istio.io/latest/docs/reference/config/security/peer_authentication/){target=_blank} CRD to control whether traffic within the mesh require mutual TLS exclusively, or whether it should be more permissive.
+
+The [`RequestAuthentication`](https://istio.io/latest/docs/reference/config/security/request_authentication/){target=_blank} CRD is used to turn on parsing and validation of JWT tokens.
+
+Workload and user identity are the the basis for authentication.
+
+The [`AuthorizationPolicy`](https://istio.io/latest/docs/reference/config/security/authorization-policy/){target=_blank} CRD provides powerful mechanism for applying authorization policies based on either workload or user identity, as well as arbitrary information from the request, such as specific request headers, JWT claims, and more.
+
+### Explore observability
+
+In a microservices architecture, observability is necessary to help us reason about our systems, how calls traverse our microservices, to identify bottlenecks, and more.
+
+The services in an Istio mesh are automatically observable, without adding any burden on developers.
+
+#### Deploy the Addons
+
+The Istio distribution provides addons for a number of systems that together provide observability for the service mesh:
+
+- [Zipkin](https://zipkin.io/){target=_blank} or [Jaeger](https://www.jaegertracing.io/){target=_blank} for distributed tracing
+- [Prometheus](https://prometheus.io/){target=_blank} for metrics collection
+- [Grafana](https://grafana.com/){target=_blank} provides dashboards for monitoring, using Prometheus as the data source
+- [Kiali](https://kiali.io/){target=_blank} allows us to visualize the mesh
+
+These addons are located in the `samples/addons/` folder of the distribution.
+
+1. Navigate to the addons directory
+
+    ```shell
+    cd ~/istio-{{istio.version}}/samples/addons
+    ```
+
+1. Deploy each addon:
+
+    ```shell
+    kubectl apply -f extras/zipkin.yaml
+    ```
+
+    ```shell
+    kubectl apply -f prometheus.yaml
+    ```
+
+    ```shell
+    kubectl apply -f grafana.yaml
+    ```
+
+    ```shell
+    kubectl apply -f kiali.yaml
+    ```
+
+1. Verify that the `istio-system` namespace is now running additional workloads for each of the addons.
+
+    ```shell
+    kubectl get pod -n istio-system
+    ```
+
+#### Generate a load
+
+Recall the ingress gateway IP address from the previous section:
+
+```shell
+GATEWAY_IP=$(kubectl get service istio-ingressgateway -n istio-system -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
+
+In order to have something to observe, we need to generate a load on our system.
+
+```shell
+for ((i=1;i<=600;i++)); do curl -s $GATEWAY_IP > /dev/null; sleep 1; done
+```
+
+#### Explore the dashboards.
+
+The `istioctl` CLI provides convenience commands for accessing the web UIs for each dashboard.
+
+Take a moment to review the help information for the `istioctl dashboard` command:
+
+```{.shell .language-shell}
+istioctl dashboard --help
+```
+
+Proceed to explore each of the dashboards using the above command.
+Your instructor will give a demonstration of each dashboard, time permitting.
+
 
 ## Summary
 
