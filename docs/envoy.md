@@ -2,13 +2,11 @@
 
 In this lab, we will learn how basic Envoy building blocks are composed into a fully functioning Envoy proxy configuration.
 
-We begin with a minimal configuration needed to get Envoy up and running, and then build on it to get it to do more.
-
->>SLIDES: explain the terminology -- specifically clusters and endpoints
+We begin with a minimal configuration needed to get Envoy up and to run and then build on it to get it to do more.
 
 ## Prerequisites
 
-We'll use the [func-e CLI](https://func-e.io/) to download and run the Envoy proxy automatically. To install func-e, run the following command:
+We'll automatically download and run the Envoy proxy automatically, using the [func-e CLI](https://func-e.io/). To install func-e, run the following command:
 
 ```shell
 curl https://func-e.io/install.sh | bash -s -- -b /usr/local/bin
@@ -85,12 +83,12 @@ We get back `Recv failure: Connection reset by peer`.
 
 ## Sending direct responses
 
-To route the received requests, we'll have to define a **filter chain**. Filter chains are a collection of filters that can be applied to a request. A filter can inspect the request at different levels and perform some action based on the results. There a various types of filters, such as listener filters, network filters, and HTTP filters, and they operate at different levels of the request. 
+We'll have to define a **filter chain** to route the requests. Filter chains are a collection of filters that can be applied to a request. A filter can inspect the request at different levels and perform some action based on the results. There a various types of filters, such as listener filters, network filters, and HTTP filters, and they operate at different levels of the request. 
 
 For example, the listener filters will operate on the received packet's headers. In contrast, the HTTP connection manager network filter can translate from raw bytes to HTTP-level messages. It can handle access logging, generate request IDs, manipulate headers, etc.
 
 
-We'll define the **HTTP connection manager filter** (or HCM for short) in the filter chain. Inside the HCM filter configruation, we can define one or more HTTP filters. The last filter in the HTTP filter chain has to be the router filter (`envoy.filters.http.router`) that implements the HTTP forwarding to a cluster.
+We'll define the **HTTP connection manager filter** (or HCM for short) in the filter chain. Inside the HCM filter configuration, we can define one or more HTTP filters. The last filter in the HTTP filter chain has to be the router filter (`envoy.filters.http.router`) that implements the HTTP forwarding to a cluster.
 
 So we'll have a single network filter (HCM) with a single HTTP filter (router), as shown below:
 
@@ -115,13 +113,13 @@ Review the following Envoy configuration, which adds an HCM filter specification
     The HCM contains numerous other fields we can specify and configure. You can check out the complete documentation of the HCM [here](https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto).
 
 
-The most interesting part of the HCM is the `route_config` section. This section contains the route table for the connection manager and it specifies the virtual hosts and routes that Envoy will use to route the requests.
+The most interesting part of the HCM is the `route_config` section. This section contains the route table for the connection manager, and it specifies the virtual hosts and routes that Envoy will use to route the requests.
 
-The `domains` field inside a virtual host specifies the domain names the virtual host will serve. This is where we could define an actual domain name we want to match against. For example, if we include `hello.com` in the domains array, Envoy will check if the host/authority header of the incoming request matches one of the specified domains and then proceed to the routes section.  We're specifying `*` in the domains, which means we'll match on any host/authority header.
+The `domains` field inside a virtual host specifies the domain names the virtual host will serve. This is where we could define an actual domain name we want to match against. For example, if we include `hello.com` in the domains array, Envoy will check if the host/authority header of the incoming request matches one of the specified domains and then proceed to the routes section. We're specifying `*` in the domains, which means we'll match on any host/authority header.
 
 Next, we can define one or more routes (note that the first route that matches will be used) by comparing the request properties such as the path, query parameters, headers, etc.
 
-Once the route is matched, we can specify the cluster that Envoy will forward the request to. Later we'll use an actual cluster, but for this example, we're using a route called [DirectResponseAction](https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/route/v3/route_components.proto#envoy-v3-api-msg-config-route-v3-directresponseaction) (`direct_response` field) that returns a status and body we specify.
+Once the route is matched, we can specify the cluster Envoy forwards the request to. Later we'll use an actual cluster, but for this example, we're using a route called [DirectResponseAction](https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/route/v3/route_components.proto#envoy-v3-api-msg-config-route-v3-directresponseaction) (`direct_response` field) that returns a status and body we specify.
 
 Save the above configuration to `direct-response.yaml` and start Envoy:
 
@@ -207,7 +205,7 @@ curl localhost:10000
 upstream connect error or disconnect/reset before headers. reset reason: connection failure, transport failure reason: delayed connect error: 111
 ```
 
-We get an error because nothing is listening on ports `8100` and `8200`, which are the two endpoints we referenced in the cluster. Let's just run two instances of the `httpbin` service:
+We get an error because nothing is listening on ports `8100` and `8200`, the two endpoints we referenced in the cluster. Let's just run two instances of the `httpbin` service:
 
 ```shell
 docker run -d -p 8100:80 kennethreitz/httpbin
@@ -244,7 +242,7 @@ curl localhost:10000/headers
 }
 ```
 
-To see that Envoy is load-balancing between the two endpoints, we can stop one of the containers (e.g. `docker stop <container_id>`) and then send a couple of requests. You'll notice we'll either get back a connect error or a response from one of the running services.
+To see that Envoy is load-balancing between the two endpoints, we can stop one of the containers (e.g. `docker stop <container_id>`) and then send a couple of requests. You'll notice we'll either get back a connection error or a response from one of the running services.
 
 ## Routing requests
 
@@ -279,10 +277,10 @@ clusters:
 Once we have more than one cluster, we have to decide how we want to split the traffic between them. There are multiple ways we can configure traffic routing. Here are a couple of examples:
 
 - Create multiple virtual hosts and split the traffic based on the host/authority (e.g., `www.example.com` traffic goes to one cluster and `www.hello.com` traffic goes to another cluster).
-- Within a single virtual host, we can inspect the request properties and match (and route) traffic. For example, we can match the header values or match the request's path (e.g. `/v1/api` goes to one cluster and `/v2/api` goes to another cluster).
+- Within a single virtual host, we can inspect the request properties and match (and route) traffic. For example, we can match the header values or match the request's path (e.g., `/v1/api` goes to one cluster and `/v2/api` goes to another cluster).
 - Split the traffic by weight, where a certain percentage of traffic goes to one cluster and the rest to another cluster.
 
-Let's look at a simple example of splitting the traffic based on the path prefix. We'll use the same backend service (httpbin), but we'll route the traffic that starts with /one to the first cluster and the one that starts with /two to the second cluster. Additionally, we'll rewrite the URL to `/ip` and `/user-agent` to see the difference between the two responses.
+Let's look at a simple example of splitting the traffic based on the path prefix. We'll use the same backend service (httpbin), but we'll route the traffic that starts with /one to the first cluster and the one that starts with /two to the second cluster. We'll rewrite the URL to `/ip` and `/user-agent` to see the difference between the two responses.
 
 Here's the snippet of the routing configuration:
 
@@ -351,4 +349,4 @@ curl localhost:10000/two
 
 ## Summary
 
-Equipped with the basics of Envoy, in the next lab we turn our attention to Istio, of which Envoy is a crucial building block.
+Equipped with the basics of Envoy, in the next lab, we turn our attention to Istio, of which Envoy is a crucial building block.

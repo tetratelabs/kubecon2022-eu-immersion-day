@@ -8,6 +8,3 @@ spec:
     matchLabels:
       app: httpbin
   url: oci://[REPOSITORY]/wasm:v1
-  pluginConfig:
-    header_1: "some_value_1"
-    header_2: "another_value"
