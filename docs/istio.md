@@ -297,7 +297,7 @@ kubectl get pod -l app=httpbin -o wide
 
 ### Destination Rules
 
-With Istio, you can apply the [DestionationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/) 
+With Istio, you can apply the [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/)
 CRD (Custom Resource Definition) to configure traffic policy: the details of how clients call a service.
 
 Specifically, you can configure:
