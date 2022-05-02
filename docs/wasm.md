@@ -103,7 +103,7 @@ go mod init wasm-extension
 
 Next, let's create the `main.go` file where the code for our Wasm extension will live:
 
-```go linenums="1" title="main.go"
+```go linenums="1" title="main.go" hl_lines="41"
 --8<-- "wasm/main.go"
 ```
 
@@ -111,15 +111,17 @@ Save the above to `main.go`.
 
 In the `main.go` file we defined a couple of functions that will be called by Envoy when the extension is loaded or when the requests are being processed. The part where we add the custom response header is in the `OnHttpResponseHeaders` function, as shown below:
 
-??? tldr "onresponseheaders.go"
+!!! tldr "onresponseheaders.go"
     ```golang linenums="1"
     --8<-- "wasm/onresponseheaders.go"
     ```
 
-::: Proxy Wasm Go SDK API
+!!! note "Proxy Wasm Go SDK API"
+
     The SDK API is in the `proxywasm` package included in the source code. The SDK provides a set of functions that can be used to interact with the Envoy proxy and/or the requests and responses. It contains functions for adding and manipulating HTTP headers, body, logging functions, and other APIs for using shared queues, shared data, and more.
 
-To build the extension, we'll use the [TinyGo compiler](https://tinygo.org) - follow [these instructions](https://tetratelabs.github.io/wasm-workshop/1_prerequisites/#installing-tinygo) to install TinyGo.
+To build the extension, we'll use the [TinyGo compiler](https://tinygo.org) - follow [these instructions](https://tetratelabs.github.io/wasm-workshop/1_prerequisites/#installing-tinygo){target=_blank} to install TinyGo.
+
 
 With TinyGo installed, we can download the dependencies and build the extension:
 
@@ -135,7 +137,7 @@ go: found github.com/tetratelabs/proxy-wasm-go-sdk/proxywasm in github.com/tetra
 go: found github.com/tetratelabs/proxy-wasm-go-sdk/proxywasm/types in github.com/tetratelabs/proxy-wasm-go-sdk v0.17.0
 ```
 
-The build command should run successfully and generate a file called `main.wasm`.
+The `build` command should run successfully and generate a file named `main.wasm`.
 
 We already have the Envoy config, so let's re-run `func-e`:
 
@@ -151,7 +153,7 @@ Let's try sending a couple of requests to `localhost:10000/one` to see the custo
 curl -v http://localhost:10000/one
 ```
 
-```console
+```console linenums="1" hl_lines="20"
 *   Trying 127.0.0.1:10000...
 * Connected to localhost (127.0.0.1) port 10000 (#0)
 > GET /one HTTP/1.1
@@ -232,7 +234,7 @@ Because we applied the WasmPlugin to the first `httpbin` deployment (see the sel
 curl -v $GATEWAY_IP/one
 ```
 
-```console hl_lines="15"
+```console linenums="1" hl_lines="15"
 > GET /one HTTP/1.1
 > Host: 34.82.240.26
 > User-Agent: curl/7.74.0
