@@ -65,7 +65,7 @@ To deploy Envoy as a sidecar, we will employ the convenient [automatic sidecar i
     kubectl get ns -Listio-injection
     ```
 
-1. When using `kubectl` to apply a deployment, Istio employs a Kubernetes [admission controller](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/) to augment the pod specification to bundle Envoy into a sidecar container.
+1. When using `kubectl` to apply a deployment, Istio employs a Kubernetes [admission controller](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/){target=_blank} to augment the pod specification to bundle Envoy into a sidecar container.
 
     Verify this:  observe the presence of the istio sidecar injector in your Kubernetes cluster:
 
@@ -88,17 +88,20 @@ kubectl apply -f access-logging.yaml
 
 This will simplify our ability to observe http requests in the mesh.
 
+???+ note "What is Telemetry resource?"
+    The [Telemetry resource](https://istio.io/latest/docs/reference/config/telemetry/){target=_blank} is a Kubernetes custom resource that defines how the telemetry is generated for workloads within the mesh.
+
 ## Scenario 1: Load-balancing across multiple endpoints
 
 ### Deploy httpbin
 
-As in the previous lab, we use [httpbin](https://httpbin.org/) as the application under test.
+As in the previous lab, we use [httpbin](https://httpbin.org/){target=_blank} as the application under test.
 
-Istio conveniently provides httpbin as one of its [sample applications](https://github.com/istio/istio/tree/master/samples/httpbin).
+Istio conveniently provides httpbin as one of its [sample applications](https://github.com/istio/istio/tree/master/samples/httpbin){target=_blank}.
 
-For convenience, you will find a copy of the [`httpbin.yaml`](https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml) Kubernetes manifest in the `artifacts` folder.
+For convenience, you will find a copy of the [`httpbin.yaml`](https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml){target=_blank} Kubernetes manifest in the `artifacts` folder.
 
-Deploy httpbin to the default namespace:
+Deploy `httpbin` to the default namespace:
    
 ??? tldr "httpbin.yaml"
     ```yaml linenums="1"
@@ -119,9 +122,9 @@ Having two pods will give us the two endpoints to load-balance across.
 
 ### Deploy the `sleep` client
 
-Istio also provides a convenient [sample app named sleep](https://github.com/istio/istio/tree/master/samples/sleep).
+Istio also provides a convenient [sample app named sleep](https://github.com/istio/istio/tree/master/samples/sleep){target=_blank}.
 
-Deploy the [sleep](https://raw.githubusercontent.com/istio/istio/master/samples/sleep/sleep.yaml) client:
+Deploy the [sleep](https://raw.githubusercontent.com/istio/istio/master/samples/sleep/sleep.yaml){target=_blank} client:
 
 ??? tldr "sleep.yaml"
     ```yaml linenums="1"
@@ -129,7 +132,7 @@ Deploy the [sleep](https://raw.githubusercontent.com/istio/istio/master/samples/
     ```
 
 ```shell
-k apply -f sleep.yaml
+kubectl apply -f sleep.yaml
 ```
 
 ### Challenge
@@ -307,43 +310,42 @@ kubectl get pod -l app=httpbin -o wide
 
 ### Destination Rules
 
-With Istio, you can apply the [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/)
+With Istio, you can apply the [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/){target=_blank}
 CRD (Custom Resource Definition) to configure traffic policy: the details of how clients call a service.
 
 Specifically, you can configure:
 
-- Load balancer settings: which load balancing algorithm to use
-- Connection pool settings: for both tcp and http connections, configure the volume of connections, retries, timeouts, etc..
-- Outlier detection: under what conditions to evict an unhealthy endpoints, and for how long
-- TLS mode: whether a connection to an upstream service should use plain text, TLS, mutual TLS using certificates you specify, or mutual TLS using Istio-issued certificates.
+- **Load balancer settings**: which load balancing algorithm to use
+- **Connection pool settings**: for both `tcp` and `http` connections, configure the volume of connections, retries, timeouts, etc..
+- **Outlier detection**: under what conditions to evict an unhealthy endpoints, and for how long
+- **TLS mode**: whether a connection to an upstream service should use plain text, TLS, mutual TLS using certificates you specify, or mutual TLS using Istio-issued certificates.
 
 Explore applying a destination rule to alter the load balancer configuration.
 
 !!! question "Did you know?"
 
-    What is the default load balancing algorithm currently in play for calls to httpbin?
+    What is the default load balancing algorithm currently in play for calls to `httpbin`?
 
     Visit the Istio configuration reference [here](https://istio.io/latest/docs/reference/config/networking/destination-rule/#LoadBalancerSettings-SimpleLB){target=_blank} to find out.
 
-Apply the following destination rule for the httpbin service, which alters the load balancing algorithm to "LEAST_CONN":
+Apply the following destination rule for the httpbin service, which alters the load balancing algorithm to `LEAST_CONN`:
 
 !!! tldr "destination-rule.yaml"
     ```yaml linenums="1"
     --8<-- "istio/destination-rule.yaml"
     ```
 
-In envoy, the load balancer policy is associated to a given upstream service, in envoy's terms, it's in the "cluster" config.
+In Envoy, the load balancer policy is associated to a given upstream service, in Envoy's terms, it's in the "cluster" config.
 
-Look for lbPolicy field in cluster configuration yaml output:
+Look for `lbPolicy` field in cluster configuration YAML output:
 
 ```shell
 istioctl proxy-config cluster $SLEEP_POD --fqdn httpbin.default.svc.cluster.local -o yaml | grep lbPolicy -A 3 -B 3
 ```
 
-Note in the output the vlaue of lbPolicy should say "LEAST_REQUEST," which is [envoy's name](https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto.html#enum-config-cluster-v3-cluster-lbpolicy){target=_blank} for Istio's LEAST_CONN setting.
+Note in the output the vlaue of `lbPolicy` should say `LEAST_REQUEST`, which is [Envoy's name](https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto.html#enum-config-cluster-v3-cluster-lbpolicy){target=_blank} for Istio's `LEAST_CONN` setting.
 
-Verify that the envoy configuration was altered and that client calls now follow the "least request" algorithm.
-
+Verify that the Envoy configuration was altered and that client calls now follow the "least request" algorithm.
 
 ## Scenario 2: Two clusters with routing configuration
 
@@ -355,7 +357,7 @@ kubectl scale deploy httpbin --replicas=1
 
 ### Deploy a second httpbin service
 
-The following manifest is a separate deployment of `httpbin`, named httpbin-2.
+The following manifest is a separate deployment of `httpbin`, named `httpbin-2`.
 
 ??? tldr "httpbin-2.yaml"
     ```yaml linenums="1"
@@ -379,7 +381,7 @@ Study the manifest shown below:
     --8<-- "istio/virtual-service.yaml"
     ```
 
-It states: when making requests to the `httpbin` host, route the request to either the first destination (httpbin) or the second (httpbin-2), as a function of the path prefix in the request url.
+It states: when making requests to the `httpbin` host, route the request to either the first destination (`httpbin`) or the second (`httpbin-2`), as a function of the path prefix in the request url.
 
 Apply the manifest:
 
@@ -391,28 +393,28 @@ kubectl apply -f virtual-service.yaml
 
 Verify that requests to `/one` are routed to the `httpbin` deployment's `/ip` endpoint, and that requests to `/two` are routed to the `httpbin-2` deployment's `/user-agent` endpoint.
 
-1. Tail the logs of the httpbin pod's istio-proxy container:
+1. Tail the logs of the `httpbin` pod's `istio-proxy` container:
 
     ```shell
     HTTPBIN_POD=$(kubectl get pod -l app=httpbin -ojsonpath='{.items[0].metadata.name}')
     kubectl logs --follow $HTTPBIN_POD -c istio-proxy
     ```
 
-1. In a separate terminal, tail the httpbin-2 pod's logs:
+1. In a separate terminal, tail the `httpbin-2` pod's logs:
 
     ```shell
     HTTPBIN2_POD=$(kubectl get pod -l app=httpbin-2 -ojsonpath='{.items[0].metadata.name}')
     kubectl logs --follow $HTTPBIN2_POD -c istio-proxy
     ```
 
-1. Separately, make repeated calls to the `/one` endpoint from the sleep pod:
+1. Separately, make repeated calls to the `/one` endpoint from the `sleep` pod:
 
     ```shell
     SLEEP_POD=$(kubectl get pod -l app=sleep -ojsonpath='{.items[0].metadata.name}')
     kubectl exec $SLEEP_POD -it -- curl httpbin:8000/one
     ```
 
-1. Likewise, make repeated calls to the `/two` endpoint from the sleep pod:
+1. Likewise, make repeated calls to the `/two` endpoint from the `sleep` pod:
 
     ```shell
     SLEEP_POD=$(kubectl get pod -l app=sleep -ojsonpath='{.items[0].metadata.name}')
@@ -441,7 +443,7 @@ Capture the gateway's external IP address:
 GATEWAY_IP=$(kubectl get service istio-ingressgateway -n istio-system -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
-Visit the gateway ip address in your web browser; you should get back a "connection refused" message.
+Visit the gateway IP address in your web browser; you should get back a "connection refused" message.
 
 ### Configure the gateway
 
@@ -458,7 +460,7 @@ The wildcard value for the `hosts` field ensures a match if the request is made 
 kubectl apply -f gateway.yaml
 ```
 
-Try once more to access the gateway IP address.  It should no longer return "connection refused."  Instead you should get a 404 (not found).
+Try once more to access the gateway IP address. It should no longer return "connection refused." Instead you should get a 404 (not found).
 
 ### Bind the virtual service to the gateway
 
@@ -542,13 +544,13 @@ It's worthwhile taking a close look at the output.  Below I have removed some of
 
 The ability to control load-balancing and routing are but one of the features of Istio.
 
-Istio supports additional and important cross-cutting concerns, including security and observability.
+Istio supports additional and important cross-cutting concerns, including [security](https://istio.io/latest/docs/concepts/security/){target=_blank} and [observability](https://istio.io/latest/docs/tasks/observability/){target=_blank}.
 
 ### Security
 
-With Istio, deployed workloads are automatically assigned a secure identity.
+With Istio, deployed workloads are automatically assigned a unique identity.
 
-Istio provides the [`PeerAuthentication`](https://istio.io/latest/docs/reference/config/security/peer_authentication/){target=_blank} CRD to control whether traffic within the mesh require mutual TLS exclusively, or whether it should be more permissive.
+Istio provides the [`PeerAuthentication`](https://istio.io/latest/docs/reference/config/security/peer_authentication/){target=_blank} CRD to control whether traffic within the mesh require mutual TLS exclusively, or whether it should be permissive.
 
 The [`RequestAuthentication`](https://istio.io/latest/docs/reference/config/security/request_authentication/){target=_blank} CRD is used to turn on parsing and validation of JWT tokens.
 

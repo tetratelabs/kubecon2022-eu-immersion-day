@@ -15,7 +15,7 @@ curl https://func-e.io/install.sh | bash -s -- -b /usr/local/bin
 You can verify func-e CLI gets installed by running the following command:
 
 ```shell
-func-e version
+func-e --version
 ```
 
 To run the Envoy proxy, we have to provide a configuration file. In the next section, we'll construct a minimal configuration file that allows us to run Envoy.
@@ -98,10 +98,35 @@ So we'll have a single network filter (HCM) with a single HTTP filter (router), 
 Review the following Envoy configuration, which adds an HCM filter specification to the chain
 (the :material-plus-circle: symbols reveal explanations of the corresponding section of the configuration):
 
-!!! tldr "direct-response.yaml"
-    ```yaml linenums="1"
-    --8<-- "envoy/direct-response.yaml"
-    ```
+```yaml
+static_resources:
+  listeners: # (1)
+  - name: listener_0
+    address:
+      socket_address:
+        address: 0.0.0.0
+        port_value: 10000
+    filter_chains:
+    - filters:
+      - name: envoy.filters.network.http_connection_manager # (2)
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          stat_prefix: hello_world_service # (3)
+          http_filters:
+          - name: envoy.filters.http.router # (4)
+          route_config: # (5)
+            name: my_first_route
+            virtual_hosts:
+            - name: my_vhost
+              domains: ["*"]
+              routes:
+              - match:
+                  prefix: "/"
+                direct_response:
+                  status: 200
+                  body:
+                    inline_string: "Hello!"
+```
 
 1. The listener section is the same as before; nothing has changed here.
 2. A network filter has a name, `typed_config` section that contains the configuration for the filter. The `@type` field is required and specifies the type of the filter.
@@ -345,6 +370,16 @@ curl localhost:10000/two
 {
   "user-agent": "curl/7.74.0"
 }
+```
+
+Type `fg` to bring the Envoy process to the foreground and press ++ctrl+c++ to stop it.
+
+## Cleanup
+
+To stop running the Docker containers, run:
+
+```shell
+docker stop $(docker ps -q)
 ```
 
 ## Summary
