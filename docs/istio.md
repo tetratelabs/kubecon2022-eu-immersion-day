@@ -88,7 +88,7 @@ kubectl apply -f access-logging.yaml
 
 This will simplify our ability to observe http requests in the mesh.
 
-???+ note "What is Telemetry resource?"
+??? note "What is Telemetry resource?"
     The [Telemetry resource](https://istio.io/latest/docs/reference/config/telemetry/){target=_blank} is a Kubernetes custom resource that defines how the telemetry is generated for workloads within the mesh.
 
 ## Scenario 1: Load-balancing across multiple endpoints
@@ -343,7 +343,7 @@ Look for `lbPolicy` field in cluster configuration YAML output:
 istioctl proxy-config cluster $SLEEP_POD --fqdn httpbin.default.svc.cluster.local -o yaml | grep lbPolicy -A 3 -B 3
 ```
 
-Note in the output the vlaue of `lbPolicy` should say `LEAST_REQUEST`, which is [Envoy's name](https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto.html#enum-config-cluster-v3-cluster-lbpolicy){target=_blank} for Istio's `LEAST_CONN` setting.
+Note in the output the value of `lbPolicy` should say `LEAST_REQUEST`, which is [Envoy's name](https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto.html#enum-config-cluster-v3-cluster-lbpolicy){target=_blank} for Istio's `LEAST_CONN` setting.
 
 Verify that the Envoy configuration was altered and that client calls now follow the "least request" algorithm.
 
