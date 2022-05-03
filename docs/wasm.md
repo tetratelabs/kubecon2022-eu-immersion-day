@@ -1,5 +1,8 @@
 # Extending Envoy and Istio with Wasm
 
+
+## Envoy Wasm filter
+
 Let's look more closely at the Envoy configuration from the previous section:
 
 ```sh
@@ -23,15 +26,17 @@ Because the configuration is enormous, let's search for the `type.googleapis.com
 !!! Note
     There will be more than one instance of the `type.googleapis.com/envoy.extensions.filters.network.wasm.v3.Wasm` filter in the configuration. The `envoy.wasm.stats` extension gets executed on multiple paths for multiple listeners.
 
-The `istio.stats` extension is a Wasm extension that's built into Envoy. How do we know that? Well, the built-in extensions use the `envoy.wasm.runtime.null` runtime. If we wanted to run our Wasm extension, we could bundle it with Envoy. However, there are easier ways to do this.
+The `istio.stats` extension is a Wasm extension built into Envoy. How do we know that? Well, the built-in extensions use the `envoy.wasm.runtime.null` runtime. If we wanted to run our Wasm extension, we could bundle it with Envoy. However, there are easier ways to do this.
 
-We can tell Envoy to load a Wasm extension from a specific .wasm file we provide in the configuration. We don't have to rebuild Envoy and maintain our Envoy binary.
+We can tell Envoy to load a Wasm extension from a specific `.wasm` file we provide in the configuration. We don't have to rebuild Envoy and maintain our Envoy binary.
+
+### Using the Wasm filter
 
 To configure a Wasm extension, we use a HTTP filter called `envoy.extensions.filters.network.wasm.v3.Wasm`. Since this is a HTTP filter, we know we have to configure it inside the `http_filters` section right before the router filter (`envoy.filters.http.router`).
 
 Let's use the Envoy configuration we're already familiar with and see if we can figure out how to configure Envoy to load a Wasm extension.
 
-```yaml hl_lines="9-20"
+```yaml linenums="1" hl_lines="9-20"
 ...
     filter_chains:
     - filters:
@@ -76,7 +81,8 @@ mkdir wasm-extension && cd wasm-extension
 We can now run func-e with the following configuration:
 
 !!! tldr "envoy-config.yaml"
-    ```yaml
+    ```yaml linenums="1" hl_lines="15-26"
+
     --8<-- "wasm/envoy-config.yaml"
 
 ```
@@ -93,7 +99,7 @@ Invalid path: main.wasm
 
 It should fail because there's no `main.wasm` file. Let's build one!
 
-## Building a Wasm Extension
+### Building a Wasm Extension
 
 We'll build a simple Wasm extension that adds a custom response HTTP header to all requests.
 
@@ -105,7 +111,7 @@ go mod init wasm-extension
 
 Next, let's create the `main.go` file where the code for our Wasm extension will live:
 
-```go linenums="1" title="main.go" hl_lines="41"
+```go linenums="1" title="main.go" hl_lines="35-47"
 --8<-- "wasm/main.go"
 ```
 
@@ -113,15 +119,30 @@ Save the above to `main.go`.
 
 In the `main.go` file we defined a couple of functions that will be called by Envoy when the extension is loaded or when the requests are being processed. The part where we add the custom response header is in the `OnHttpResponseHeaders` function, as shown below:
 
-!!! tldr "onresponseheaders.go"
-    ```golang linenums="1"
-    --8<-- "wasm/onresponseheaders.go"
+```golang linenums="1"
+func (ctx *httpContext) OnHttpResponseHeaders(numHeaders int, endOfStream bool) types.Action {
+  proxywasm.LogInfo("OnHttpResponseHeaders") // (1)
 
+  key := "x-custom-header"
+  value := "custom-value"
+
+  if err := proxywasm.AddHttpResponseHeader(key, value); err != nil { // (2)
+    proxywasm.LogCriticalf("failed to add header: %v", err)
+    return types.ActionPause // (3)
+  }
+  proxywasm.LogInfof("header set: %s=%s", key, value)
+  return types.ActionContinue // (4)
+}
 ```
+
+1. ProxyWasm library has built-in functions for logging.
+2. We can `AddHttpResponseHeader` to add a custom response header.
+3. In case of an error, we return `types.ActionPause` to tell Envoy to stop executing subsequent filters.
+4. If there are no errors, we continue with the execution.
 
 !!! note "Proxy Wasm Go SDK API"
 
-    The SDK API is in the `proxywasm` package included in the source code. The SDK provides a set of functions that can be used to interact with the Envoy proxy and/or the requests and responses. It contains functions for adding and manipulating HTTP headers, body, logging functions, and other APIs for using shared queues, shared data, and more.
+    The SDK API is in the `proxywasm` package included in the source code. The SDK provides a set of functions we can use to interact with the Envoy proxy and/or the requests and responses. It contains functions for adding and manipulating HTTP headers, body, logging functions, and other APIs for using shared queues, shared data, and more.
 
 To build the extension, we'll use the [TinyGo compiler](https://tinygo.org) - follow [these instructions](https://tetratelabs.github.io/wasm-workshop/1_prerequisites/#installing-tinygo){target=_blank} to install TinyGo.
 
@@ -139,7 +160,7 @@ go: found github.com/tetratelabs/proxy-wasm-go-sdk/proxywasm in github.com/tetra
 go: found github.com/tetratelabs/proxy-wasm-go-sdk/proxywasm/types in github.com/tetratelabs/proxy-wasm-go-sdk v0.17.0
 ```
 
-The `build` command should run successfully and generate a file named `main.wasm`.
+The `build` command should run successfully and generate a `main.wasm` file.
 
 We already have the Envoy config, so let's re-run `func-e`:
 
@@ -185,7 +206,7 @@ curl -v http://localhost:10000/one
 
 Running the Wasm extension like this is helpful. However, we want to run it next to the Envoy proxies in the Istio service mesh.
 
-# Istio WasmPlugin
+## Istio WasmPlugin resource
 
 The WasmPlugin allows us to select the workloads we want to apply the Wasm module to and point to the Wasm module.
 
@@ -193,9 +214,9 @@ The WasmPlugin resource includes a feature that enables the Istio proxy (or isti
 
 There was no need to push or publish the `main.wasm` file anywhere in the previous labs, as it was accessible by the Envoy proxy because everything was running locally. However, now that we want to run the Wasm module in Envoy proxies that are part of the Istio service mesh, we need to make the `main.wasm` file available so all those proxies can load and run it.
 
-## Building the Wasm image
+### Building the Wasm image
 
-Since we'll be building and pushing the Wasm file, we'll need a very minimal Dockerfile in the project:
+Since we'll be building and pushing the Wasm file, we'll need a very minimal `Dockerfile` in the project:
 
 ```dockerfile
 FROM scratch
@@ -212,9 +233,14 @@ docker build -t ${REPOSITORY}/wasm:v1 .
 docker push ${REPOSITORY}/wasm:v1
 ```
 
-## Creating WasmPlugin resource
+??? note "Setting up your registry"
+    You can use any OCI-compliant registry to host your Wasm files. For example, you can use [Docker Hub](https://hub.docker.com), or if you're using GCP, you can set up the [Docker registry here](https://console.cloud.google.com/artifacts), by clicking the **Create Repository** button, selecting the Docker format and clicking **Create**. Then, follow the setup instructions to complete setting up the GCP registry, and don't forget to [configure access control](https://cloud.google.com/artifact-registry/docs/access-control), so you can push to it and Istio can pull from it.
 
-We can now create the WasmPlugin resource that tells Envoy where to download the extension from and which workloads to apply it to (we'll use `httpbin` workload we deployed in the previous lab).
+You can also use the pre-built images that's available here: `europe-west8-docker.pkg.dev/peterjs-project/kubecon2022/wasm:v1`.
+
+### Creating WasmPlugin resource
+
+We can now create the WasmPlugin resource that tells Envoy where to download the extension and which workloads to apply it to (we'll use `httpbin` workload we deployed in the previous lab). 
 
 ???+ note "WasmPlugin resource"
     ```go linenums="1" title="plugin.yaml"
@@ -262,4 +288,4 @@ curl -v $GATEWAY_IP/one
 
 ## Summary
 
-In this lab, you learned how to create and configure a Wasm extension using Go and the proxy-wasm-go-sdk. You've learned how to run a single Envoy proxy that loads a Wasm extension and how to use the WasmPlugin resource to deploy the Wasm extension to Envoy proxies inside the Istio service mesh.
+In this lab, you learned how to create and configure a Wasm extension using Go and the proxy-wasm-go-sdk. You've learned how to run a single Envoy proxy that loads a Wasm extension and use the WasmPlugin resource to deploy the Wasm extension to Envoy proxies inside the Istio service mesh.
