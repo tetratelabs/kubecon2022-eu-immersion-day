@@ -80,7 +80,8 @@ Turn on access logging in Envoy, by applying the following Telemetry custom reso
 !!! tldr "access-logging.yaml"
     ```yaml linenums="1"
     --8<-- "istio/access-logging.yaml"
-    ```
+
+```
 
 ```shell
 kubectl apply -f access-logging.yaml
@@ -102,11 +103,12 @@ Istio conveniently provides httpbin as one of its [sample applications](https://
 For convenience, you will find a copy of the [`httpbin.yaml`](https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml){target=_blank} Kubernetes manifest in the `artifacts` folder.
 
 Deploy `httpbin` to the default namespace:
-   
+
 ??? tldr "httpbin.yaml"
     ```yaml linenums="1"
     --8<-- "istio/httpbin.yaml"
-    ```
+
+```
 
 ```shell
 kubectl apply -f httpbin.yaml
@@ -129,7 +131,8 @@ Deploy the [sleep](https://raw.githubusercontent.com/istio/istio/master/samples/
 ??? tldr "sleep.yaml"
     ```yaml linenums="1"
     --8<-- "istio/sleep.yaml"
-    ```
+
+```
 
 ```shell
 kubectl apply -f sleep.yaml
@@ -169,7 +172,7 @@ Requests from `sleep` are load-balanced across the two `httpbin` endpoints.
     ```
 
     !!! note
-    
+
         Note above how the name of the container `istio-proxy` is used to reference the sidecar.
 
     In a second terminal, run:
@@ -224,20 +227,25 @@ Note the following:
 
 - `trafficDirection` (at the very end of the output) is set to `OUTBOUND`
 - The `address` section specifies the address and port that the listener is configured for:
+
     ```yaml
     address:
         socketAddress:
         address: 0.0.0.0
         portValue: 8000
     ```
+
 - The configuration contains a `filterChains` field:
+
     ```yaml
     filterChains:
     - filterChainMatch:
         applicationProtocols:
         ...
     ```
+
 - The filter chain contains a filter named `envoy.filters.network.http_connection_manager`, and its list of `httpFilters` ends with the `router` filter:
+
     ```yaml
             httpFilters:
             - name: istio.metadata_exchange
@@ -333,7 +341,8 @@ Apply the following destination rule for the httpbin service, which alters the l
 !!! tldr "destination-rule.yaml"
     ```yaml linenums="1"
     --8<-- "istio/destination-rule.yaml"
-    ```
+
+```
 
 In Envoy, the load balancer policy is associated to a given upstream service, in Envoy's terms, it's in the "cluster" config.
 
@@ -362,7 +371,8 @@ The following manifest is a separate deployment of `httpbin`, named `httpbin-2`.
 ??? tldr "httpbin-2.yaml"
     ```yaml linenums="1"
     --8<-- "istio/httpbin-2.yaml"
-    ```
+
+```
 
 ```shell
 kubectl apply -f httpbin-2.yaml
@@ -379,9 +389,10 @@ Study the manifest shown below:
 !!! tldr "virtual-service.yaml"
     ```yaml linenums="1"
     --8<-- "istio/virtual-service.yaml"
-    ```
 
-It states: when making requests to the `httpbin` host, route the request to either the first destination (`httpbin`) or the second (`httpbin-2`), as a function of the path prefix in the request url.
+```
+
+It states: when making requests to the `httpbin` host, route the request to either the first destination (`httpbin`) or the second (`httpbin-2`), as a function of the path prefix in the request URL.
 
 Apply the manifest:
 
@@ -452,7 +463,8 @@ To expose HTTP port 80, apply the following gateway manifest:
 !!! tldr "gateway.yaml"
     ```yaml linenums="1"
     --8<-- "istio/gateway.yaml"
-    ```
+
+```
 
 The wildcard value for the `hosts` field ensures a match if the request is made directly to the "raw" gateway IP address.
 
@@ -460,7 +472,7 @@ The wildcard value for the `hosts` field ensures a match if the request is made 
 kubectl apply -f gateway.yaml
 ```
 
-Try once more to access the gateway IP address. It should no longer return "connection refused." Instead you should get a 404 (not found).
+Try once more to access the gateway IP address. It should no longer return "connection refused". Instead you should get a 404 (not found).
 
 ### Bind the virtual service to the gateway
 
@@ -469,7 +481,8 @@ Study the following manifest:
 !!! tldr "gw-virtual-service.yaml"
     ```yaml linenums="1"
     --8<-- "istio/gw-virtual-service.yaml"
-    ```
+
+```
 
 Note:
 
@@ -508,7 +521,7 @@ However, the `/one` and `/two` endpoints should now be functional, and return th
     istioctl proxy-config route deploy/istio-ingressgateway.istio-system --name http.8080 -o yaml
     ```
 
-It's worthwhile taking a close look at the output.  Below I have removed some of the noise to highlight the most salient parts:
+It's worthwhile taking a close look at the output. Below I have removed some of the noise to highlight the most salient parts:
 
 ```yaml
     ...
@@ -619,7 +632,7 @@ In order to have something to observe, we need to generate a load on our system.
 for ((i=1;i<=600;i++)); do curl -s $GATEWAY_IP > /dev/null; sleep 1; done
 ```
 
-#### Explore the dashboards.
+#### Explore the dashboards
 
 The `istioctl` CLI provides convenience commands for accessing the web UIs for each dashboard.
 
@@ -632,7 +645,6 @@ istioctl dashboard --help
 Proceed to explore each of the dashboards using the above command.
 Your instructor will give a demonstration of each dashboard, time permitting.
 
-
 ## Summary
 
 In comparison to having to configure Envoy proxies manually, Istio provides a mechanism to configure Envoy proxies with much less effort.
@@ -640,7 +652,7 @@ It draws on information from the environment: awareness of running workloads (se
 
 Istio Custom Resource Definitions complement and complete the picture by providing mechanisms to configure routing rules, authorization policies and more.
 
-Istio goes one step further:  it dynamically reconfigures the Envoy proxies any time that services are scaled, or added to and removed from the mesh.
+Istio goes one step further: it dynamically reconfigures the Envoy proxies any time that services are scaled, or added to and removed from the mesh.
 
 Istio and Envoy together provide a foundation for running microservices at scale.
 

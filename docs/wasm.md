@@ -15,12 +15,13 @@ We'll use the `/config_dump` endpoint on the Envoy proxy container in the pod to
 kubectl exec -it $HTTPBIN_POD -c istio-proxy -- curl localhost:15000/config_dump > envoy.json
 ```
 
-Because the configuration is enormous, let's search for the `type.googleapis.com/envoy.extensions.filters.network.wasm.v3.Wasm`. Here's a snippet: 
+Because the configuration is enormous, let's search for the `type.googleapis.com/envoy.extensions.filters.network.wasm.v3.Wasm`. Here's a snippet:
 
 ??? tldr "wasm-filter.json"
     ```json linenums="1"
     --8<-- "wasm/wasmfilter.json"
-    ```
+
+```
 
 !!! Note
     There will be more than one instance of the `type.googleapis.com/envoy.extensions.filters.network.wasm.v3.Wasm` filter in the configuration. The `envoy.wasm.stats` extension gets executed on multiple paths for multiple listeners.
@@ -31,7 +32,7 @@ We can tell Envoy to load a Wasm extension from a specific `.wasm` file we provi
 
 ### Using the Wasm filter
 
-To configure a Wasm extension, we use an HTTP filter called `envoy.extensions.filters.network.wasm.v3.Wasm`. Since this is an HTTP filter, we know we have to configure it inside the `http_filters` section right before the router filter (`envoy.filters.http.router`).
+To configure a Wasm extension, we use a HTTP filter called `envoy.extensions.filters.network.wasm.v3.Wasm`. Since this is a HTTP filter, we know we have to configure it inside the `http_filters` section right before the router filter (`envoy.filters.http.router`).
 
 Let's use the Envoy configuration we're already familiar with and see if we can figure out how to configure Envoy to load a Wasm extension.
 
@@ -83,7 +84,8 @@ We can now run func-e with the following configuration:
     ```yaml linenums="1" hl_lines="15-26"
 
     --8<-- "wasm/envoy-config.yaml"
-    ```
+
+```
 
 ```shell
 func-e run -c envoy-config.yaml
@@ -143,7 +145,6 @@ func (ctx *httpContext) OnHttpResponseHeaders(numHeaders int, endOfStream bool) 
     The SDK API is in the `proxywasm` package included in the source code. The SDK provides a set of functions we can use to interact with the Envoy proxy and/or the requests and responses. It contains functions for adding and manipulating HTTP headers, body, logging functions, and other APIs for using shared queues, shared data, and more.
 
 To build the extension, we'll use the [TinyGo compiler](https://tinygo.org) - follow [these instructions](https://tetratelabs.github.io/wasm-workshop/1_prerequisites/#installing-tinygo){target=_blank} to install TinyGo.
-
 
 With TinyGo installed, we can download the dependencies and build the extension:
 
@@ -227,8 +228,9 @@ This Docker file copies the `main.wasm` file to the container as `plugin.wasm`. 
 Next, we can build and push the Docker image:
 
 ```shell
-docker build -t [REPOSITORY]/wasm:v1 .
-docker push [REPOSITORY]/wasm:v1
+export REPOSITORY=[REPOSITORY]
+docker build -t ${REPOSITORY}/wasm:v1 .
+docker push ${REPOSITORY}/wasm:v1
 ```
 
 ??? note "Setting up your registry"
@@ -243,7 +245,8 @@ We can now create the WasmPlugin resource that tells Envoy where to download the
 ???+ note "WasmPlugin resource"
     ```go linenums="1" title="plugin.yaml"
     --8<-- "wasm/plugin.yaml"
-    ```
+
+```
 
 You should update the `REPOSITORY` value in the `url` field before saving the above YAML to `plugin.yaml` and deploying it using `kubectl apply -f plugin.yaml`.
 
