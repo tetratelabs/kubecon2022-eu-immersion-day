@@ -4,7 +4,7 @@
 
 1. If you brought your own Kubernetes cluster:
 
-    - Kubernetes versions 1.16 through 1.23 should all work.  Feel free to check the Istio [support status of Istio releases page](https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases){target=_blank} for version {{istio.version}}.
+    - Kubernetes versions 1.16 through 1.23 should all work.  For details, consult the Istio [support status of Istio releases page](https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases){target=_blank} for version {{istio.version}}.
 
     - Although we typically recommend a 3-worker node cluster of machine type "n1-standard-2" or similar, a smaller cluster will work just fine for the Istio lab.
 
@@ -20,7 +20,7 @@
           --network "default"
         ```
 
-    - Feel free to provision a K8S cluster on any infrastructure of your choosing.
+    - _Feel free to provision a K8S cluster on any infrastructure of your choosing._
 
 3. If you received Google credentials from the workshop instructors:
 
