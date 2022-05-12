@@ -19,12 +19,16 @@ Envoy is a building block of Istio.
 
 In Istio, Envoy proxies are configured indirectly, using a combination of:
 
-1. Implicit information drawn from the Kubernetes environment in which services run, and
-1. Istio-specific Kubernetes custom resource definitions (CRDs).
+1. Implicit information drawn from the Kubernetes environment, and
+1. Istio-specific Kubernetes custom resources.
+
+## Environments
+
+See [options](../environment){target=_blank} for environments.
 
 ## Install Istio
 
-Follow [these instructions](https://tetratelabs.github.io/istio-0to60/install/){target=_blank} to install Istio in your environment.
+Follow [these instructions](../install/){target=_blank} to install Istio in your environment.
 
 ## Download lab artifacts
 
