@@ -625,7 +625,7 @@ GATEWAY_IP=$(kubectl get service istio-ingressgateway -n istio-system -ojsonpath
 In order to have something to observe, we need to generate a load on our system.
 
 ```shell
-for ((i=1;i<=600;i++)); do curl -s $GATEWAY_IP > /dev/null; sleep 1; done
+for ((i=1;i<=600;i++)); do curl $GATEWAY_IP/one; curl $GATEWAY_IP/two; sleep 1; done
 ```
 
 #### Explore the dashboards
