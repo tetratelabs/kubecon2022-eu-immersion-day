@@ -103,7 +103,7 @@ As in the previous lab, we use [httpbin](https://httpbin.org/){target=_blank} as
 
 Istio conveniently provides httpbin as one of its [sample applications](https://github.com/istio/istio/tree/master/samples/httpbin){target=_blank}.
 
-For convenience, you will find a copy of the [`httpbin.yaml`](https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml){target=_blank} Kubernetes manifest in the `artifacts` folder.
+For convenience, you will find a copy of the [`httpbin.yaml`](https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml){target=_blank} Kubernetes manifest in the `istio-artifacts` folder.
 
 Deploy `httpbin` to the default namespace:
 
