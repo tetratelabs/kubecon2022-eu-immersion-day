@@ -84,8 +84,7 @@ We can now run func-e with the following configuration:
     ```yaml linenums="1" hl_lines="15-26"
 
     --8<-- "wasm/envoy-config.yaml"
-
-```
+    ```
 
 ```shell
 func-e run -c envoy-config.yaml
@@ -245,8 +244,7 @@ We can now create the WasmPlugin resource that tells Envoy where to download the
 ???+ note "WasmPlugin resource"
     ```go linenums="1" title="plugin.yaml"
     --8<-- "wasm/plugin.yaml"
-
-```
+    ```
 
 You should update the `REPOSITORY` value in the `url` field before saving the above YAML to `plugin.yaml` and deploying it using `kubectl apply -f plugin.yaml`.
 

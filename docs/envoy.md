@@ -74,12 +74,12 @@ $ curl -v localhost:10000
 > User-Agent: curl/7.74.0
 > Accept: */*
 >
-* Recv failure: Connection reset by peer
-* Closing connection 0
-curl: (56) Recv failure: Connection reset by peer
+* Empty reply from server
+* Connection #0 to host localhost left intact
+curl: (52) Empty reply from server
 ```
 
-We get back `Recv failure: Connection reset by peer`.
+We get back `Empty reply from server`.
 
 ## Sending direct responses
 
