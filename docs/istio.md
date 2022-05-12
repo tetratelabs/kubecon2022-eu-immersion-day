@@ -80,8 +80,7 @@ Turn on access logging in Envoy, by applying the following Telemetry custom reso
 !!! tldr "access-logging.yaml"
     ```yaml linenums="1"
     --8<-- "istio/access-logging.yaml"
-
-```
+    ```
 
 ```shell
 kubectl apply -f access-logging.yaml
@@ -107,8 +106,7 @@ Deploy `httpbin` to the default namespace:
 ??? tldr "httpbin.yaml"
     ```yaml linenums="1"
     --8<-- "istio/httpbin.yaml"
-
-```
+    ```
 
 ```shell
 kubectl apply -f httpbin.yaml
@@ -131,8 +129,7 @@ Deploy the [sleep](https://raw.githubusercontent.com/istio/istio/master/samples/
 ??? tldr "sleep.yaml"
     ```yaml linenums="1"
     --8<-- "istio/sleep.yaml"
-
-```
+    ```
 
 ```shell
 kubectl apply -f sleep.yaml
@@ -341,8 +338,7 @@ Apply the following destination rule for the httpbin service, which alters the l
 !!! tldr "destination-rule.yaml"
     ```yaml linenums="1"
     --8<-- "istio/destination-rule.yaml"
-
-```
+    ```
 
 In Envoy, the load balancer policy is associated to a given upstream service, in Envoy's terms, it's in the "cluster" config.
 
@@ -371,8 +367,7 @@ The following manifest is a separate deployment of `httpbin`, named `httpbin-2`.
 ??? tldr "httpbin-2.yaml"
     ```yaml linenums="1"
     --8<-- "istio/httpbin-2.yaml"
-
-```
+    ```
 
 ```shell
 kubectl apply -f httpbin-2.yaml
@@ -389,8 +384,7 @@ Study the manifest shown below:
 !!! tldr "virtual-service.yaml"
     ```yaml linenums="1"
     --8<-- "istio/virtual-service.yaml"
-
-```
+    ```
 
 It states: when making requests to the `httpbin` host, route the request to either the first destination (`httpbin`) or the second (`httpbin-2`), as a function of the path prefix in the request URL.
 
@@ -463,8 +457,7 @@ To expose HTTP port 80, apply the following gateway manifest:
 !!! tldr "gateway.yaml"
     ```yaml linenums="1"
     --8<-- "istio/gateway.yaml"
-
-```
+    ```
 
 The wildcard value for the `hosts` field ensures a match if the request is made directly to the "raw" gateway IP address.
 
@@ -481,8 +474,7 @@ Study the following manifest:
 !!! tldr "gw-virtual-service.yaml"
     ```yaml linenums="1"
     --8<-- "istio/gw-virtual-service.yaml"
-
-```
+    ```
 
 Note:
 
