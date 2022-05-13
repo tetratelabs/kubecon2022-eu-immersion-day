@@ -30,8 +30,6 @@
     - Your instructor will demonstrate the process of accessing and configuring your environment, described below.
     - The instructions below explain in detail how to access your account, select your project, and launch the cloud shell.
 
-Be sure to configure your `~/.kube/config` file to point to your cluster.
-
 _If you are bringing your own Kubernetes cluster, you are ready to proceed with the Istio lab._
 
 ## Log in to GCP
