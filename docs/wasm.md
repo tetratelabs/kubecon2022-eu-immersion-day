@@ -20,8 +20,7 @@ Because the configuration is enormous, let's search for the `type.googleapis.com
 ??? tldr "wasm-filter.json"
     ```json linenums="1"
     --8<-- "wasm/wasmfilter.json"
-
-```
+    ```
 
 !!! Note
     There will be more than one instance of the `type.googleapis.com/envoy.extensions.filters.network.wasm.v3.Wasm` filter in the configuration. The `envoy.wasm.stats` extension gets executed on multiple paths for multiple listeners.
