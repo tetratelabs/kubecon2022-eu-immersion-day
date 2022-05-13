@@ -8,7 +8,7 @@
 
     - Although we typically recommend a 3-worker node cluster of machine type "n1-standard-2" or similar, a smaller cluster will work just fine for the Istio lab.
 
-2. If you have your own public cloud account:
+1. If you have your own public cloud account:
 
     - On GCP, the following command should provision a GKE cluster of adequate size for the workshop:
 
@@ -22,7 +22,9 @@
 
     - _Feel free to provision a K8S cluster on any infrastructure of your choosing._
 
-3. If you received Google credentials from the workshop instructors:
+    - Be sure to configure your `~/.kube/config` file to point to your cluster.
+
+1. If you received Google credentials from the workshop instructors:
 
     - A Kubernetes cluster has already been provisioned for you.
     - Your instructor will demonstrate the process of accessing and configuring your environment, described below.
