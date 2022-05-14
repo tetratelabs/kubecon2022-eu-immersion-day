@@ -381,7 +381,7 @@ kubectl apply -f httpbin-2.yaml
 
 If you recall, back in the Envoy lab, you wrote Envoy routing configuration involving path prefixes and rewrites.
 
-In Istio, the routing configuration is exposed as a Kubernetes custom resource of kind `VirtualService`.
+In Istio, the routing configuration is exposed as a Kubernetes custom resource of kind [`VirtualService`](https://istio.io/latest/docs/reference/config/networking/virtual-service/){target=_blank}.
 
 Study the manifest shown below:
 
