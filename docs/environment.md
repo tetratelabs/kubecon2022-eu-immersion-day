@@ -30,7 +30,7 @@
     - Your instructor will demonstrate the process of accessing and configuring your environment, described below.
     - The instructions below explain in detail how to access your account, select your project, and launch the cloud shell.
 
-1. **EXPERIMENTAL** - Interactive environments provided by [KillerCoda](https://killercoda.com/) that run in a web browser, for [Envoy and Istio labs](https://killercoda.com/4451c982-0926-4954-a1f5-b24485e21bb9)
+1. **EXPERIMENTAL** - Interactive environments provided by [KillerCoda](https://killercoda.com/) that run in a web browser, for [Envoy and Istio labs](https://killercoda.com/4451c982-0926-4954-a1f5-b24485e21bb9).
 
 _If you are bringing your own Kubernetes cluster, you are ready to proceed with the Istio lab._
 
