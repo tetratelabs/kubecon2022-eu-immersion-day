@@ -1,0 +1,1997 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Labs for the Tetrate Envoy and Serivce Mesh Immersion Day at Kubecon EU 2022">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.8">
+    
+    
+      
+        <title>Introduction to Istio - Tetrate Envoy and Service Mesh Immersion Day</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.644de097.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../css/custom.css">
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#introduction-to-istio" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Tetrate Envoy and Service Mesh Immersion Day" class="md-header__button md-logo" aria-label="Tetrate Envoy and Service Mesh Immersion Day" data-md-component="logo">
+      <img id="logo_light_mode" src="../assets/tetrate-logo-white.png" alt="logo">
+<img id="logo_dark_mode" src="../assets/tetrate-logo-black.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Tetrate Envoy and Service Mesh Immersion Day
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Introduction to Istio
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tetratelabs/kubecon-eu-immersion-day" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Tetrate Envoy and Service Mesh Immersion Day" class="md-nav__button md-logo" aria-label="Tetrate Envoy and Service Mesh Immersion Day" data-md-component="logo">
+      <img id="logo_light_mode" src="../assets/tetrate-logo-white.png" alt="logo">
+<img id="logo_dark_mode" src="../assets/tetrate-logo-black.png" alt="logo">
+
+    </a>
+    Tetrate Envoy and Service Mesh Immersion Day
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tetratelabs/kubecon-eu-immersion-day" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../envoy/" class="md-nav__link">
+        Introduction to Envoy
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Introduction to Istio
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Introduction to Istio
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#preface" class="md-nav__link">
+    Preface
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environments" class="md-nav__link">
+    Environments
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-istio" class="md-nav__link">
+    Install Istio
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download-lab-artifacts" class="md-nav__link">
+    Download lab artifacts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-are-the-envoys" class="md-nav__link">
+    Where are the Envoys?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#turn-on-envoy-access-logging" class="md-nav__link">
+    Turn on Envoy access logging
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scenario-1-load-balancing-across-multiple-endpoints" class="md-nav__link">
+    Scenario 1: Load-balancing across multiple endpoints
+  </a>
+  
+    <nav class="md-nav" aria-label="Scenario 1: Load-balancing across multiple endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploy-httpbin" class="md-nav__link">
+    Deploy httpbin
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy httpbin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scale-httpbin" class="md-nav__link">
+    Scale httpbin
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-the-sleep-client" class="md-nav__link">
+    Deploy the sleep client
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenge" class="md-nav__link">
+    Challenge
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#observe-load-balancing-between-the-two-endpoints" class="md-nav__link">
+    Observe load-balancing between the two endpoints
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#behind-the-curtain" class="md-nav__link">
+    Behind the curtain
+  </a>
+  
+    <nav class="md-nav" aria-label="Behind the curtain">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#envoys-listeners-configuration" class="md-nav__link">
+    Envoy's listeners configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routes" class="md-nav__link">
+    Routes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clusters" class="md-nav__link">
+    Clusters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#endpoints" class="md-nav__link">
+    Endpoints
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#destination-rules" class="md-nav__link">
+    Destination Rules
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scenario-2-two-clusters-with-routing-configuration" class="md-nav__link">
+    Scenario 2: Two clusters with routing configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Scenario 2: Two clusters with routing configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploy-a-second-httpbin-service" class="md-nav__link">
+    Deploy a second httpbin service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply-the-routing-configuration-virtualservice" class="md-nav__link">
+    Apply the routing configuration: VirtualService
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify" class="md-nav__link">
+    Verify
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-an-ingress-gateway" class="md-nav__link">
+    Using an Ingress Gateway
+  </a>
+  
+    <nav class="md-nav" aria-label="Using an Ingress Gateway">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configure-the-gateway" class="md-nav__link">
+    Configure the gateway
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bind-the-virtual-service-to-the-gateway" class="md-nav__link">
+    Bind the virtual service to the gateway
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-the-endpoints" class="md-nav__link">
+    Test the endpoints
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inspect-the-gateways-envoy-configuration" class="md-nav__link">
+    Inspect the Gateway's Envoy configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beyond-traffic-management" class="md-nav__link">
+    Beyond traffic management
+  </a>
+  
+    <nav class="md-nav" aria-label="Beyond traffic management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    Security
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explore-observability" class="md-nav__link">
+    Explore observability
+  </a>
+  
+    <nav class="md-nav" aria-label="Explore observability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploy-the-addons" class="md-nav__link">
+    Deploy the Addons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-a-load" class="md-nav__link">
+    Generate a load
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explore-the-dashboards" class="md-nav__link">
+    Explore the dashboards
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    Summary
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wasm/" class="md-nav__link">
+        Extending Envoy and Istio with Wasm
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../summary/" class="md-nav__link">
+        Summary
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#preface" class="md-nav__link">
+    Preface
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environments" class="md-nav__link">
+    Environments
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-istio" class="md-nav__link">
+    Install Istio
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download-lab-artifacts" class="md-nav__link">
+    Download lab artifacts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-are-the-envoys" class="md-nav__link">
+    Where are the Envoys?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#turn-on-envoy-access-logging" class="md-nav__link">
+    Turn on Envoy access logging
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scenario-1-load-balancing-across-multiple-endpoints" class="md-nav__link">
+    Scenario 1: Load-balancing across multiple endpoints
+  </a>
+  
+    <nav class="md-nav" aria-label="Scenario 1: Load-balancing across multiple endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploy-httpbin" class="md-nav__link">
+    Deploy httpbin
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy httpbin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scale-httpbin" class="md-nav__link">
+    Scale httpbin
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-the-sleep-client" class="md-nav__link">
+    Deploy the sleep client
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenge" class="md-nav__link">
+    Challenge
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#observe-load-balancing-between-the-two-endpoints" class="md-nav__link">
+    Observe load-balancing between the two endpoints
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#behind-the-curtain" class="md-nav__link">
+    Behind the curtain
+  </a>
+  
+    <nav class="md-nav" aria-label="Behind the curtain">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#envoys-listeners-configuration" class="md-nav__link">
+    Envoy's listeners configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routes" class="md-nav__link">
+    Routes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clusters" class="md-nav__link">
+    Clusters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#endpoints" class="md-nav__link">
+    Endpoints
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#destination-rules" class="md-nav__link">
+    Destination Rules
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scenario-2-two-clusters-with-routing-configuration" class="md-nav__link">
+    Scenario 2: Two clusters with routing configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Scenario 2: Two clusters with routing configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploy-a-second-httpbin-service" class="md-nav__link">
+    Deploy a second httpbin service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply-the-routing-configuration-virtualservice" class="md-nav__link">
+    Apply the routing configuration: VirtualService
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify" class="md-nav__link">
+    Verify
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-an-ingress-gateway" class="md-nav__link">
+    Using an Ingress Gateway
+  </a>
+  
+    <nav class="md-nav" aria-label="Using an Ingress Gateway">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configure-the-gateway" class="md-nav__link">
+    Configure the gateway
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bind-the-virtual-service-to-the-gateway" class="md-nav__link">
+    Bind the virtual service to the gateway
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-the-endpoints" class="md-nav__link">
+    Test the endpoints
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inspect-the-gateways-envoy-configuration" class="md-nav__link">
+    Inspect the Gateway's Envoy configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beyond-traffic-management" class="md-nav__link">
+    Beyond traffic management
+  </a>
+  
+    <nav class="md-nav" aria-label="Beyond traffic management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    Security
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explore-observability" class="md-nav__link">
+    Explore observability
+  </a>
+  
+    <nav class="md-nav" aria-label="Explore observability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploy-the-addons" class="md-nav__link">
+    Deploy the Addons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-a-load" class="md-nav__link">
+    Generate a load
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explore-the-dashboards" class="md-nav__link">
+    Explore the dashboards
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    Summary
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+<a href="https://github.com/tetratelabs/kubecon-eu-immersion-day/edit/master/docs/istio.md" title="Edit this page" class="md-content__button md-icon">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+</a>
+
+
+
+<h1 id="introduction-to-istio">Introduction to Istio<a class="headerlink" href="#introduction-to-istio" title="Permanent link">&para;</a></h1>
+<h2 id="preface">Preface<a class="headerlink" href="#preface" title="Permanent link">&para;</a></h2>
+<p>In the Envoy lab, we explored two scenarios:</p>
+<ol>
+<li>
+<p>A single Envoy "cluster" with two endpoints.</p>
+<p>In this scenario, we observed that a request to the proxy resulted in the load-balancing of requests across the two endpoints.</p>
+</li>
+<li>
+<p>Two Envoy clusters, together with a routing configuration to route requests from the proxy to either cluster depending on the request's path prefix:</p>
+<ul>
+<li>Requests having the path prefix of <code>/one</code> were routed to the first cluster's <code>/ip</code> endpoint, and</li>
+<li>Requests with the path prefix of <code>/two</code> were routed to the second cluster's <code>/user-agent</code> endpoint.</li>
+</ul>
+</li>
+</ol>
+<p>In this lab, you will learn how to model both scenarios in the context of Istio.</p>
+<p>Envoy is a building block of Istio.</p>
+<p>In Istio, Envoy proxies are configured indirectly, using a combination of:</p>
+<ol>
+<li>Implicit information drawn from the Kubernetes environment, and</li>
+<li>Istio-specific Kubernetes custom resources.</li>
+</ol>
+<h2 id="environments">Environments<a class="headerlink" href="#environments" title="Permanent link">&para;</a></h2>
+<p>See <a href="../environment" target="_blank">options</a> for environments.</p>
+<h2 id="install-istio">Install Istio<a class="headerlink" href="#install-istio" title="Permanent link">&para;</a></h2>
+<p>Follow <a href="../install/" target="_blank">these instructions</a> to install Istio in your environment.</p>
+<h2 id="download-lab-artifacts">Download lab artifacts<a class="headerlink" href="#download-lab-artifacts" title="Permanent link">&para;</a></h2>
+<p>Use the following command to download (to a subdirectory named <code>istio-artifacts</code>) a copy of all yaml manifests necessary for this lab.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git clone https://github.com/tetratelabs/kubecon2022-eu-immersion-day.git <span class="o">&amp;&amp;</span> <span class="se">\</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  mv kubecon2022-eu-immersion-day/artifacts/istio ./istio-artifacts <span class="o">&amp;&amp;</span> <span class="se">\</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  rm -rf kubecon2022-eu-immersion-day
+</code></pre></div>
+<h2 id="where-are-the-envoys">Where are the Envoys?<a class="headerlink" href="#where-are-the-envoys" title="Permanent link">&para;</a></h2>
+<p>In Istio, Envoy proxy instances are present in two distinct locations:</p>
+<ol>
+<li><strong>In the heart of the mesh</strong>: they are bundled as sidecar containers in the pods that run our workloads.</li>
+<li><strong>At the edge</strong>: as standalone gateways handling ingress and egress traffic in and out of the mesh.</li>
+</ol>
+<p><img alt="Istio architecture" src="../arch.svg" /></p>
+<p>An ingress gateway is deployed as part of the installation of Istio.  It resides in the <code>istio-system</code> namespace.  Verify this:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl get deploy -n istio-system
+</code></pre></div>
+<p>To deploy Envoy as a sidecar, we will employ the convenient <a href="https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/#automatic-sidecar-injection">automatic sidecar injection</a>, which works as follows:</p>
+<ol>
+<li>
+<p>Label the target namespace with the special label <code>istio-injection</code> with the value <code>enabled</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl label ns default istio-injection<span class="o">=</span>enabled
+</code></pre></div>
+<p>Verify:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl get ns -Listio-injection
+</code></pre></div>
+</li>
+<li>
+<p>When using <code>kubectl</code> to apply a deployment, Istio employs a Kubernetes <a href="https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/" target="_blank">admission controller</a> to augment the pod specification to bundle Envoy into a sidecar container.</p>
+<p>Verify this:  observe the presence of the istio sidecar injector in your Kubernetes cluster:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl get mutatingwebhookconfigurations
+</code></pre></div>
+</li>
+</ol>
+<h2 id="turn-on-envoy-access-logging">Turn on Envoy access logging<a class="headerlink" href="#turn-on-envoy-access-logging" title="Permanent link">&para;</a></h2>
+<p>Turn on access logging in Envoy, by applying the following Telemetry custom resource:</p>
+<div class="admonition tldr">
+<p class="admonition-title">access-logging.yaml</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span>
+<span class="normal"><a href="#__codelineno-5-2">2</a></span>
+<span class="normal"><a href="#__codelineno-5-3">3</a></span>
+<span class="normal"><a href="#__codelineno-5-4">4</a></span>
+<span class="normal"><a href="#__codelineno-5-5">5</a></span>
+<span class="normal"><a href="#__codelineno-5-6">6</a></span>
+<span class="normal"><a href="#__codelineno-5-7">7</a></span>
+<span class="normal"><a href="#__codelineno-5-8">8</a></span>
+<span class="normal"><a href="#__codelineno-5-9">9</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">telemetry.istio.io/v1alpha1</span><span class="w"></span>
+<a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Telemetry</span><span class="w"></span>
+<a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mesh-default</span><span class="w"></span>
+<a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">istio-system</span><span class="w"></span>
+<a id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">  </span><span class="nt">accessLogging</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">providers</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl apply -f access-logging.yaml
+</code></pre></div>
+<p>This will simplify our ability to observe http requests in the mesh.</p>
+<details class="note">
+<summary>What is Telemetry resource?</summary>
+<p>The <a href="https://istio.io/latest/docs/reference/config/telemetry/" target="_blank">Telemetry resource</a> is a Kubernetes custom resource that defines how the telemetry is generated for workloads within the mesh.</p>
+</details>
+<h2 id="scenario-1-load-balancing-across-multiple-endpoints">Scenario 1: Load-balancing across multiple endpoints<a class="headerlink" href="#scenario-1-load-balancing-across-multiple-endpoints" title="Permanent link">&para;</a></h2>
+<h3 id="deploy-httpbin">Deploy httpbin<a class="headerlink" href="#deploy-httpbin" title="Permanent link">&para;</a></h3>
+<p>As in the previous lab, we use <a href="https://httpbin.org/" target="_blank">httpbin</a> as the application under test.</p>
+<p>Istio conveniently provides httpbin as one of its <a href="https://github.com/istio/istio/tree/master/samples/httpbin" target="_blank">sample applications</a>.</p>
+<p>For convenience, you will find a copy of the <a href="https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml" target="_blank"><code>httpbin.yaml</code></a> Kubernetes manifest in the <code>istio-artifacts</code> folder.</p>
+<p>Deploy <code>httpbin</code> to the default namespace:</p>
+<details class="tldr">
+<summary>httpbin.yaml</summary>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-7-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-7-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-7-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-7-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-7-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-7-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-7-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-7-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-7-10">10</a></span>
+<span class="normal"><a href="#__codelineno-7-11">11</a></span>
+<span class="normal"><a href="#__codelineno-7-12">12</a></span>
+<span class="normal"><a href="#__codelineno-7-13">13</a></span>
+<span class="normal"><a href="#__codelineno-7-14">14</a></span>
+<span class="normal"><a href="#__codelineno-7-15">15</a></span>
+<span class="normal"><a href="#__codelineno-7-16">16</a></span>
+<span class="normal"><a href="#__codelineno-7-17">17</a></span>
+<span class="normal"><a href="#__codelineno-7-18">18</a></span>
+<span class="normal"><a href="#__codelineno-7-19">19</a></span>
+<span class="normal"><a href="#__codelineno-7-20">20</a></span>
+<span class="normal"><a href="#__codelineno-7-21">21</a></span>
+<span class="normal"><a href="#__codelineno-7-22">22</a></span>
+<span class="normal"><a href="#__codelineno-7-23">23</a></span>
+<span class="normal"><a href="#__codelineno-7-24">24</a></span>
+<span class="normal"><a href="#__codelineno-7-25">25</a></span>
+<span class="normal"><a href="#__codelineno-7-26">26</a></span>
+<span class="normal"><a href="#__codelineno-7-27">27</a></span>
+<span class="normal"><a href="#__codelineno-7-28">28</a></span>
+<span class="normal"><a href="#__codelineno-7-29">29</a></span>
+<span class="normal"><a href="#__codelineno-7-30">30</a></span>
+<span class="normal"><a href="#__codelineno-7-31">31</a></span>
+<span class="normal"><a href="#__codelineno-7-32">32</a></span>
+<span class="normal"><a href="#__codelineno-7-33">33</a></span>
+<span class="normal"><a href="#__codelineno-7-34">34</a></span>
+<span class="normal"><a href="#__codelineno-7-35">35</a></span>
+<span class="normal"><a href="#__codelineno-7-36">36</a></span>
+<span class="normal"><a href="#__codelineno-7-37">37</a></span>
+<span class="normal"><a href="#__codelineno-7-38">38</a></span>
+<span class="normal"><a href="#__codelineno-7-39">39</a></span>
+<span class="normal"><a href="#__codelineno-7-40">40</a></span>
+<span class="normal"><a href="#__codelineno-7-41">41</a></span>
+<span class="normal"><a href="#__codelineno-7-42">42</a></span>
+<span class="normal"><a href="#__codelineno-7-43">43</a></span>
+<span class="normal"><a href="#__codelineno-7-44">44</a></span>
+<span class="normal"><a href="#__codelineno-7-45">45</a></span>
+<span class="normal"><a href="#__codelineno-7-46">46</a></span>
+<span class="normal"><a href="#__codelineno-7-47">47</a></span>
+<span class="normal"><a href="#__codelineno-7-48">48</a></span>
+<span class="normal"><a href="#__codelineno-7-49">49</a></span>
+<span class="normal"><a href="#__codelineno-7-50">50</a></span>
+<span class="normal"><a href="#__codelineno-7-51">51</a></span>
+<span class="normal"><a href="#__codelineno-7-52">52</a></span>
+<span class="normal"><a href="#__codelineno-7-53">53</a></span>
+<span class="normal"><a href="#__codelineno-7-54">54</a></span>
+<span class="normal"><a href="#__codelineno-7-55">55</a></span>
+<span class="normal"><a href="#__codelineno-7-56">56</a></span>
+<span class="normal"><a href="#__codelineno-7-57">57</a></span>
+<span class="normal"><a href="#__codelineno-7-58">58</a></span>
+<span class="normal"><a href="#__codelineno-7-59">59</a></span>
+<span class="normal"><a href="#__codelineno-7-60">60</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Copyright Istio Authors</span><span class="w"></span>
+<a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="c1">#</span><span class="w"></span>
+<a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="c1">#   Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span><span class="w"></span>
+<a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="c1">#   you may not use this file except in compliance with the License.</span><span class="w"></span>
+<a id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="c1">#   You may obtain a copy of the License at</span><span class="w"></span>
+<a id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="c1">#</span><span class="w"></span>
+<a id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="c1">#       http://www.apache.org/licenses/LICENSE-2.0</span><span class="w"></span>
+<a id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="c1">#</span><span class="w"></span>
+<a id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="c1">#   Unless required by applicable law or agreed to in writing, software</span><span class="w"></span>
+<a id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="c1">#   distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span><span class="w"></span>
+<a id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="c1">#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span><span class="w"></span>
+<a id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="c1">#   See the License for the specific language governing permissions and</span><span class="w"></span>
+<a id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="c1">#   limitations under the License.</span><span class="w"></span>
+<a id="__codelineno-7-14" name="__codelineno-7-14"></a>
+<a id="__codelineno-7-15" name="__codelineno-7-15"></a><span class="c1">##################################################################################################</span><span class="w"></span>
+<a id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="c1"># httpbin service</span><span class="w"></span>
+<a id="__codelineno-7-17" name="__codelineno-7-17"></a><span class="c1">##################################################################################################</span><span class="w"></span>
+<a id="__codelineno-7-18" name="__codelineno-7-18"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-7-19" name="__codelineno-7-19"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ServiceAccount</span><span class="w"></span>
+<a id="__codelineno-7-20" name="__codelineno-7-20"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-21" name="__codelineno-7-21"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin</span><span class="w"></span>
+<a id="__codelineno-7-22" name="__codelineno-7-22"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-7-23" name="__codelineno-7-23"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-7-24" name="__codelineno-7-24"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span><span class="w"></span>
+<a id="__codelineno-7-25" name="__codelineno-7-25"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-26" name="__codelineno-7-26"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin</span><span class="w"></span>
+<a id="__codelineno-7-27" name="__codelineno-7-27"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-28" name="__codelineno-7-28"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin</span><span class="w"></span>
+<a id="__codelineno-7-29" name="__codelineno-7-29"></a><span class="w">    </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin</span><span class="w"></span>
+<a id="__codelineno-7-30" name="__codelineno-7-30"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-31" name="__codelineno-7-31"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-32" name="__codelineno-7-32"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
+<a id="__codelineno-7-33" name="__codelineno-7-33"></a><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span><span class="w"></span>
+<a id="__codelineno-7-34" name="__codelineno-7-34"></a><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+<a id="__codelineno-7-35" name="__codelineno-7-35"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-36" name="__codelineno-7-36"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin</span><span class="w"></span>
+<a id="__codelineno-7-37" name="__codelineno-7-37"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-7-38" name="__codelineno-7-38"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span><span class="w"></span>
+<a id="__codelineno-7-39" name="__codelineno-7-39"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span><span class="w"></span>
+<a id="__codelineno-7-40" name="__codelineno-7-40"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-41" name="__codelineno-7-41"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin</span><span class="w"></span>
+<a id="__codelineno-7-42" name="__codelineno-7-42"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-43" name="__codelineno-7-43"></a><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<a id="__codelineno-7-44" name="__codelineno-7-44"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-45" name="__codelineno-7-45"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-46" name="__codelineno-7-46"></a><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin</span><span class="w"></span>
+<a id="__codelineno-7-47" name="__codelineno-7-47"></a><span class="w">      </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-7-48" name="__codelineno-7-48"></a><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-49" name="__codelineno-7-49"></a><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-50" name="__codelineno-7-50"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-51" name="__codelineno-7-51"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin</span><span class="w"></span>
+<a id="__codelineno-7-52" name="__codelineno-7-52"></a><span class="w">        </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-7-53" name="__codelineno-7-53"></a><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-54" name="__codelineno-7-54"></a><span class="w">      </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin</span><span class="w"></span>
+<a id="__codelineno-7-55" name="__codelineno-7-55"></a><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-56" name="__codelineno-7-56"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker.io/kennethreitz/httpbin</span><span class="w"></span>
+<a id="__codelineno-7-57" name="__codelineno-7-57"></a><span class="w">        </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">IfNotPresent</span><span class="w"></span>
+<a id="__codelineno-7-58" name="__codelineno-7-58"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin</span><span class="w"></span>
+<a id="__codelineno-7-59" name="__codelineno-7-59"></a><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-7-60" name="__codelineno-7-60"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+</details>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl apply -f httpbin.yaml
+</code></pre></div>
+<h4 id="scale-httpbin">Scale httpbin<a class="headerlink" href="#scale-httpbin" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl scale deploy httpbin --replicas<span class="o">=</span><span class="m">2</span>
+</code></pre></div>
+<p>Having two pods will give us the two endpoints to load-balance across.</p>
+<h3 id="deploy-the-sleep-client">Deploy the <code>sleep</code> client<a class="headerlink" href="#deploy-the-sleep-client" title="Permanent link">&para;</a></h3>
+<p>Istio also provides a convenient <a href="https://github.com/istio/istio/tree/master/samples/sleep" target="_blank">sample app named sleep</a>.</p>
+<p>Deploy the <a href="https://raw.githubusercontent.com/istio/istio/master/samples/sleep/sleep.yaml" target="_blank">sleep</a> client:</p>
+<details class="tldr">
+<summary>sleep.yaml</summary>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-10-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-10-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-10-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-10-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-10-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-10-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-10-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-10-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-10-10">10</a></span>
+<span class="normal"><a href="#__codelineno-10-11">11</a></span>
+<span class="normal"><a href="#__codelineno-10-12">12</a></span>
+<span class="normal"><a href="#__codelineno-10-13">13</a></span>
+<span class="normal"><a href="#__codelineno-10-14">14</a></span>
+<span class="normal"><a href="#__codelineno-10-15">15</a></span>
+<span class="normal"><a href="#__codelineno-10-16">16</a></span>
+<span class="normal"><a href="#__codelineno-10-17">17</a></span>
+<span class="normal"><a href="#__codelineno-10-18">18</a></span>
+<span class="normal"><a href="#__codelineno-10-19">19</a></span>
+<span class="normal"><a href="#__codelineno-10-20">20</a></span>
+<span class="normal"><a href="#__codelineno-10-21">21</a></span>
+<span class="normal"><a href="#__codelineno-10-22">22</a></span>
+<span class="normal"><a href="#__codelineno-10-23">23</a></span>
+<span class="normal"><a href="#__codelineno-10-24">24</a></span>
+<span class="normal"><a href="#__codelineno-10-25">25</a></span>
+<span class="normal"><a href="#__codelineno-10-26">26</a></span>
+<span class="normal"><a href="#__codelineno-10-27">27</a></span>
+<span class="normal"><a href="#__codelineno-10-28">28</a></span>
+<span class="normal"><a href="#__codelineno-10-29">29</a></span>
+<span class="normal"><a href="#__codelineno-10-30">30</a></span>
+<span class="normal"><a href="#__codelineno-10-31">31</a></span>
+<span class="normal"><a href="#__codelineno-10-32">32</a></span>
+<span class="normal"><a href="#__codelineno-10-33">33</a></span>
+<span class="normal"><a href="#__codelineno-10-34">34</a></span>
+<span class="normal"><a href="#__codelineno-10-35">35</a></span>
+<span class="normal"><a href="#__codelineno-10-36">36</a></span>
+<span class="normal"><a href="#__codelineno-10-37">37</a></span>
+<span class="normal"><a href="#__codelineno-10-38">38</a></span>
+<span class="normal"><a href="#__codelineno-10-39">39</a></span>
+<span class="normal"><a href="#__codelineno-10-40">40</a></span>
+<span class="normal"><a href="#__codelineno-10-41">41</a></span>
+<span class="normal"><a href="#__codelineno-10-42">42</a></span>
+<span class="normal"><a href="#__codelineno-10-43">43</a></span>
+<span class="normal"><a href="#__codelineno-10-44">44</a></span>
+<span class="normal"><a href="#__codelineno-10-45">45</a></span>
+<span class="normal"><a href="#__codelineno-10-46">46</a></span>
+<span class="normal"><a href="#__codelineno-10-47">47</a></span>
+<span class="normal"><a href="#__codelineno-10-48">48</a></span>
+<span class="normal"><a href="#__codelineno-10-49">49</a></span>
+<span class="normal"><a href="#__codelineno-10-50">50</a></span>
+<span class="normal"><a href="#__codelineno-10-51">51</a></span>
+<span class="normal"><a href="#__codelineno-10-52">52</a></span>
+<span class="normal"><a href="#__codelineno-10-53">53</a></span>
+<span class="normal"><a href="#__codelineno-10-54">54</a></span>
+<span class="normal"><a href="#__codelineno-10-55">55</a></span>
+<span class="normal"><a href="#__codelineno-10-56">56</a></span>
+<span class="normal"><a href="#__codelineno-10-57">57</a></span>
+<span class="normal"><a href="#__codelineno-10-58">58</a></span>
+<span class="normal"><a href="#__codelineno-10-59">59</a></span>
+<span class="normal"><a href="#__codelineno-10-60">60</a></span>
+<span class="normal"><a href="#__codelineno-10-61">61</a></span>
+<span class="normal"><a href="#__codelineno-10-62">62</a></span>
+<span class="normal"><a href="#__codelineno-10-63">63</a></span>
+<span class="normal"><a href="#__codelineno-10-64">64</a></span>
+<span class="normal"><a href="#__codelineno-10-65">65</a></span>
+<span class="normal"><a href="#__codelineno-10-66">66</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># Copyright Istio Authors</span><span class="w"></span>
+<a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="c1">#</span><span class="w"></span>
+<a id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="c1">#   Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span><span class="w"></span>
+<a id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="c1">#   you may not use this file except in compliance with the License.</span><span class="w"></span>
+<a id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="c1">#   You may obtain a copy of the License at</span><span class="w"></span>
+<a id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="c1">#</span><span class="w"></span>
+<a id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="c1">#       http://www.apache.org/licenses/LICENSE-2.0</span><span class="w"></span>
+<a id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="c1">#</span><span class="w"></span>
+<a id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="c1">#   Unless required by applicable law or agreed to in writing, software</span><span class="w"></span>
+<a id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="c1">#   distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span><span class="w"></span>
+<a id="__codelineno-10-11" name="__codelineno-10-11"></a><span class="c1">#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span><span class="w"></span>
+<a id="__codelineno-10-12" name="__codelineno-10-12"></a><span class="c1">#   See the License for the specific language governing permissions and</span><span class="w"></span>
+<a id="__codelineno-10-13" name="__codelineno-10-13"></a><span class="c1">#   limitations under the License.</span><span class="w"></span>
+<a id="__codelineno-10-14" name="__codelineno-10-14"></a>
+<a id="__codelineno-10-15" name="__codelineno-10-15"></a><span class="c1">##################################################################################################</span><span class="w"></span>
+<a id="__codelineno-10-16" name="__codelineno-10-16"></a><span class="c1"># Sleep service</span><span class="w"></span>
+<a id="__codelineno-10-17" name="__codelineno-10-17"></a><span class="c1">##################################################################################################</span><span class="w"></span>
+<a id="__codelineno-10-18" name="__codelineno-10-18"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-10-19" name="__codelineno-10-19"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ServiceAccount</span><span class="w"></span>
+<a id="__codelineno-10-20" name="__codelineno-10-20"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-21" name="__codelineno-10-21"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-10-22" name="__codelineno-10-22"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-10-23" name="__codelineno-10-23"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-10-24" name="__codelineno-10-24"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span><span class="w"></span>
+<a id="__codelineno-10-25" name="__codelineno-10-25"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-26" name="__codelineno-10-26"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-10-27" name="__codelineno-10-27"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-28" name="__codelineno-10-28"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-10-29" name="__codelineno-10-29"></a><span class="w">    </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-10-30" name="__codelineno-10-30"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-31" name="__codelineno-10-31"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-32" name="__codelineno-10-32"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+<a id="__codelineno-10-33" name="__codelineno-10-33"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
+<a id="__codelineno-10-34" name="__codelineno-10-34"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-35" name="__codelineno-10-35"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-10-36" name="__codelineno-10-36"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-10-37" name="__codelineno-10-37"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span><span class="w"></span>
+<a id="__codelineno-10-38" name="__codelineno-10-38"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span><span class="w"></span>
+<a id="__codelineno-10-39" name="__codelineno-10-39"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-40" name="__codelineno-10-40"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-10-41" name="__codelineno-10-41"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-42" name="__codelineno-10-42"></a><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<a id="__codelineno-10-43" name="__codelineno-10-43"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-44" name="__codelineno-10-44"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-45" name="__codelineno-10-45"></a><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-10-46" name="__codelineno-10-46"></a><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-47" name="__codelineno-10-47"></a><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-48" name="__codelineno-10-48"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-49" name="__codelineno-10-49"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-10-50" name="__codelineno-10-50"></a><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-51" name="__codelineno-10-51"></a><span class="w">      </span><span class="nt">terminationGracePeriodSeconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
+<a id="__codelineno-10-52" name="__codelineno-10-52"></a><span class="w">      </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-10-53" name="__codelineno-10-53"></a><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-54" name="__codelineno-10-54"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-10-55" name="__codelineno-10-55"></a><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">curlimages/curl</span><span class="w"></span>
+<a id="__codelineno-10-56" name="__codelineno-10-56"></a><span class="w">        </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;/bin/sleep&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;3650d&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
+<a id="__codelineno-10-57" name="__codelineno-10-57"></a><span class="w">        </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">IfNotPresent</span><span class="w"></span>
+<a id="__codelineno-10-58" name="__codelineno-10-58"></a><span class="w">        </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-59" name="__codelineno-10-59"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/sleep/tls</span><span class="w"></span>
+<a id="__codelineno-10-60" name="__codelineno-10-60"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret-volume</span><span class="w"></span>
+<a id="__codelineno-10-61" name="__codelineno-10-61"></a><span class="w">      </span><span class="nt">volumes</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-62" name="__codelineno-10-62"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret-volume</span><span class="w"></span>
+<a id="__codelineno-10-63" name="__codelineno-10-63"></a><span class="w">        </span><span class="nt">secret</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-64" name="__codelineno-10-64"></a><span class="w">          </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep-secret</span><span class="w"></span>
+<a id="__codelineno-10-65" name="__codelineno-10-65"></a><span class="w">          </span><span class="nt">optional</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<a id="__codelineno-10-66" name="__codelineno-10-66"></a><span class="nn">---</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+</details>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl apply -f sleep.yaml
+</code></pre></div>
+<h3 id="challenge">Challenge<a class="headerlink" href="#challenge" title="Permanent link">&para;</a></h3>
+<p>Observe that all pods in the <code>default</code> namespace each have two containers:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl get pod -n default
+</code></pre></div>
+<p>Can you discover the name of the sidecar container?</p>
+<details class="hint">
+<summary>Hint</summary>
+<p>Describe any of the pods in the default namespace and study the <code>Containers</code> section.</p>
+</details>
+<h3 id="observe-load-balancing-between-the-two-endpoints">Observe load-balancing between the two endpoints<a class="headerlink" href="#observe-load-balancing-between-the-two-endpoints" title="Permanent link">&para;</a></h3>
+<p>Requests from <code>sleep</code> are load-balanced across the two <code>httpbin</code> endpoints.</p>
+<p><img alt="Load balancing in Istio" src="../istio-load-balancing.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the commands below, we capture the names of each of the two <code>httpbin</code> pods and of the <code>sleep</code> pod independently, for clarity.</p>
+</div>
+<ol>
+<li>
+<p>Tail the logs of each Envoy sidecar on the receiving end.</p>
+<p>In one terminal, run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nv">HTTPBIN_POD_1</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>httpbin -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>kubectl logs --follow <span class="nv">$HTTPBIN_POD_1</span> -c istio-proxy
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note above how the name of the container <code>istio-proxy</code> is used to reference the sidecar.</p>
+</div>
+<p>In a second terminal, run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nv">HTTPBIN_POD_2</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>httpbin -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[1].metadata.name}&#39;</span><span class="k">)</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>kubectl logs --follow <span class="nv">$HTTPBIN_POD_2</span> -c istio-proxy
+</code></pre></div>
+</li>
+<li>
+<p>Make repeated calls from the <code>sleep</code> container to the httbin service and observe which of the two <code>httpbin</code> pods receives the request.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nv">SLEEP_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>sleep -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl httpbin:8000/html
+</code></pre></div>
+</li>
+</ol>
+<p>You can stop following the logs by pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span> and close the first two terminal windows.</p>
+<h3 id="behind-the-curtain">Behind the curtain<a class="headerlink" href="#behind-the-curtain" title="Permanent link">&para;</a></h3>
+<p>The Istio CLI, <code>istioctl</code>, provides a handy subcommand <code>proxy-config</code>, that will help us get at the configuration of the Envoy proxy in the sleep pod: its listeners, routes, clusters, and endpoints.</p>
+<p>Capture the name of the sleep pod to a variable:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nv">SLEEP_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>sleep -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+</code></pre></div>
+<h4 id="envoys-listeners-configuration">Envoy's listeners configuration<a class="headerlink" href="#envoys-listeners-configuration" title="Permanent link">&para;</a></h4>
+<p>Run the following command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>istioctl proxy-config listener <span class="nv">$SLEEP_POD</span>
+</code></pre></div>
+<p>The output displays a high-level overview of the Envoy listener configuration. From this output we learn that Envoy has multiple listeners, listening on multiple ports.</p>
+<p>Some listeners handle inbound requests, for example there's a health endpoint on port <code>15021</code>, and a prometheus scrape endpoint on port <code>15090</code>.</p>
+<p>The listener on port <code>8000</code> (which matches the port number of the httpbin cluster IP service) is responsible for handling requests bound to the <code>httpbin</code> service.</p>
+<p>To see the full listener section of the Envoy configuration for port <code>8000</code>, run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>istioctl proxy-config listener <span class="nv">$SLEEP_POD</span> --port <span class="m">8000</span> -o yaml &gt; listeners.yaml
+</code></pre></div>
+<p>The output is voluminous (~ 200+ lines) and that's why we piped it into the <code>listeners.yaml</code> file.</p>
+<p>Note the following:</p>
+<ul>
+<li><code>trafficDirection</code> (at the very end of the output) is set to <code>OUTBOUND</code></li>
+<li>
+<p>The <code>address</code> section specifies the address and port that the listener is configured for:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nt">address</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">    </span><span class="nt">socketAddress</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span><span class="w"></span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">    </span><span class="nt">portValue</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span><span class="w"></span>
+</code></pre></div>
+</li>
+<li>
+<p>The configuration contains a <code>filterChains</code> field:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nt">filterChains</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filterChainMatch</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">    </span><span class="nt">applicationProtocols</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+</code></pre></div>
+</li>
+<li>
+<p>The filter chain contains a filter named <code>envoy.filters.network.http_connection_manager</code>, and its list of <code>httpFilters</code> ends with the <code>router</code> filter:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="w">        </span><span class="nt">httpFilters</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">istio.metadata_exchange</span><span class="w"></span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span><span class="w"></span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">        </span><span class="nt">typedConfig</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">            </span><span class="s">&#39;@type&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.router.v3.Router</span><span class="w"></span>
+</code></pre></div>
+</li>
+</ul>
+<p>All of the above facts should match with what you learned in the <a href="../envoy">Introduction to Envoy</a>.</p>
+<h4 id="routes">Routes<a class="headerlink" href="#routes" title="Permanent link">&para;</a></h4>
+<p>Similar to the <code>proxy-config listener</code> command, the high-level overview for routes is the following command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>istioctl proxy-config route <span class="nv">$SLEEP_POD</span>
+</code></pre></div>
+<p>Zero-in on the route configuration for port <code>8000</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>istioctl proxy-config route <span class="nv">$SLEEP_POD</span> --name <span class="m">8000</span> -o yaml
+</code></pre></div>
+<p>The output will show the route configuration, including this section:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">routes</span><span class="p p-Indicator">:</span><span class="w"></span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">decorator</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">        </span><span class="nt">operation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin.default.svc.cluster.local:8000/*</span><span class="w"></span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="w">      </span><span class="nt">match</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span><span class="w"></span>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w"></span>
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="w">      </span><span class="nt">route</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="w">        </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">outbound|8000||httpbin.default.svc.cluster.local</span><span class="w"></span>
+<a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+</code></pre></div>
+<p>The above output states that calls to the httpbin service should be routed to the cluster named <code>outbound|8000||httpbin.default.svc.cluster.local</code>.</p>
+<h4 id="clusters">Clusters<a class="headerlink" href="#clusters" title="Permanent link">&para;</a></h4>
+<p>We can view all Envoy clusters with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>istioctl proxy-config cluster <span class="nv">$SLEEP_POD</span>
+</code></pre></div>
+<p>And specifically look at the configuration for the httpbin cluster with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>istioctl proxy-config cluster <span class="nv">$SLEEP_POD</span> --fqdn httpbin.default.svc.cluster.local -o yaml
+</code></pre></div>
+<h4 id="endpoints">Endpoints<a class="headerlink" href="#endpoints" title="Permanent link">&para;</a></h4>
+<p>More importantly, we'd like to know what are the endpoints backing the <code>httpbin</code> cluster.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>istioctl proxy-config endpoint <span class="nv">$SLEEP_POD</span> --cluster <span class="s2">&quot;outbound|8000||httpbin.default.svc.cluster.local&quot;</span>
+</code></pre></div>
+<p>Verify that the endpoint addresses from the output in fact match the pod IPs of the <code>httpbin</code> workloads:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>httpbin -o wide
+</code></pre></div>
+<h3 id="destination-rules">Destination Rules<a class="headerlink" href="#destination-rules" title="Permanent link">&para;</a></h3>
+<p>With Istio, you can apply the <a href="https://istio.io/latest/docs/reference/config/networking/destination-rule/" target="_blank">DestinationRule</a>
+CRD (Custom Resource Definition) to configure traffic policy: the details of how clients call a service.</p>
+<p>Specifically, you can configure:</p>
+<ul>
+<li><strong>Load balancer settings</strong>: which load balancing algorithm to use</li>
+<li><strong>Connection pool settings</strong>: for both <code>tcp</code> and <code>http</code> connections, configure the volume of connections, retries, timeouts, etc..</li>
+<li><strong>Outlier detection</strong>: under what conditions to evict an unhealthy endpoints, and for how long</li>
+<li><strong>TLS mode</strong>: whether a connection to an upstream service should use plain text, TLS, mutual TLS using certificates you specify, or mutual TLS using Istio-issued certificates.</li>
+</ul>
+<p>Explore applying a destination rule to alter the load balancer configuration.</p>
+<div class="admonition question">
+<p class="admonition-title">Did you know?</p>
+<p>What is the default load balancing algorithm currently in play for calls to <code>httpbin</code>?</p>
+<p>Visit the Istio configuration reference <a href="https://istio.io/latest/docs/reference/config/networking/destination-rule/#LoadBalancerSettings-SimpleLB" target="_blank">here</a> to find out.</p>
+</div>
+<p>Apply the following destination rule for the httpbin service, which alters the load balancing algorithm to <code>LEAST_CONN</code>:</p>
+<div class="admonition tldr">
+<p class="admonition-title">destination-rule.yaml</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-29-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-29-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-29-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-29-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-29-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-29-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-29-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-29-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-29-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-29-10">10</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-29-2" name="__codelineno-29-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span><span class="w"></span>
+<a id="__codelineno-29-3" name="__codelineno-29-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DestinationRule</span><span class="w"></span>
+<a id="__codelineno-29-4" name="__codelineno-29-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-29-5" name="__codelineno-29-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httbin</span><span class="w"></span>
+<a id="__codelineno-29-6" name="__codelineno-29-6"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-29-7" name="__codelineno-29-7"></a><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin.default.svc.cluster.local</span><span class="w"></span>
+<a id="__codelineno-29-8" name="__codelineno-29-8"></a><span class="w">  </span><span class="nt">trafficPolicy</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-29-9" name="__codelineno-29-9"></a><span class="w">    </span><span class="nt">loadBalancer</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-29-10" name="__codelineno-29-10"></a><span class="w">      </span><span class="nt">simple</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LEAST_CONN</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<p>In Envoy, the load balancer policy is associated to a given upstream service, in Envoy's terms, it's in the "cluster" config.</p>
+<p>Look for <code>lbPolicy</code> field in cluster configuration YAML output:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>istioctl proxy-config cluster <span class="nv">$SLEEP_POD</span> --fqdn httpbin.default.svc.cluster.local -o yaml <span class="p">|</span> grep lbPolicy -A <span class="m">3</span> -B <span class="m">3</span>
+</code></pre></div>
+<p>Note in the output the value of <code>lbPolicy</code> should say <code>LEAST_REQUEST</code>, which is <a href="https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto.html#enum-config-cluster-v3-cluster-lbpolicy" target="_blank">Envoy's name</a> for Istio's <code>LEAST_CONN</code> setting.</p>
+<p>Verify that the Envoy configuration was altered and that client calls now follow the "least request" algorithm.</p>
+<h2 id="scenario-2-two-clusters-with-routing-configuration">Scenario 2: Two clusters with routing configuration<a class="headerlink" href="#scenario-2-two-clusters-with-routing-configuration" title="Permanent link">&para;</a></h2>
+<p>Scale back the <code>httpbin</code> deployment to a single replica:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>kubectl scale deploy httpbin --replicas<span class="o">=</span><span class="m">1</span>
+</code></pre></div>
+<h3 id="deploy-a-second-httpbin-service">Deploy a second httpbin service<a class="headerlink" href="#deploy-a-second-httpbin-service" title="Permanent link">&para;</a></h3>
+<p>The following manifest is a separate deployment of <code>httpbin</code>, named <code>httpbin-2</code>.</p>
+<details class="tldr">
+<summary>httpbin-2.yaml</summary>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-32-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-32-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-32-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-32-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-32-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-32-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-32-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-32-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-32-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-32-10">10</a></span>
+<span class="normal"><a href="#__codelineno-32-11">11</a></span>
+<span class="normal"><a href="#__codelineno-32-12">12</a></span>
+<span class="normal"><a href="#__codelineno-32-13">13</a></span>
+<span class="normal"><a href="#__codelineno-32-14">14</a></span>
+<span class="normal"><a href="#__codelineno-32-15">15</a></span>
+<span class="normal"><a href="#__codelineno-32-16">16</a></span>
+<span class="normal"><a href="#__codelineno-32-17">17</a></span>
+<span class="normal"><a href="#__codelineno-32-18">18</a></span>
+<span class="normal"><a href="#__codelineno-32-19">19</a></span>
+<span class="normal"><a href="#__codelineno-32-20">20</a></span>
+<span class="normal"><a href="#__codelineno-32-21">21</a></span>
+<span class="normal"><a href="#__codelineno-32-22">22</a></span>
+<span class="normal"><a href="#__codelineno-32-23">23</a></span>
+<span class="normal"><a href="#__codelineno-32-24">24</a></span>
+<span class="normal"><a href="#__codelineno-32-25">25</a></span>
+<span class="normal"><a href="#__codelineno-32-26">26</a></span>
+<span class="normal"><a href="#__codelineno-32-27">27</a></span>
+<span class="normal"><a href="#__codelineno-32-28">28</a></span>
+<span class="normal"><a href="#__codelineno-32-29">29</a></span>
+<span class="normal"><a href="#__codelineno-32-30">30</a></span>
+<span class="normal"><a href="#__codelineno-32-31">31</a></span>
+<span class="normal"><a href="#__codelineno-32-32">32</a></span>
+<span class="normal"><a href="#__codelineno-32-33">33</a></span>
+<span class="normal"><a href="#__codelineno-32-34">34</a></span>
+<span class="normal"><a href="#__codelineno-32-35">35</a></span>
+<span class="normal"><a href="#__codelineno-32-36">36</a></span>
+<span class="normal"><a href="#__codelineno-32-37">37</a></span>
+<span class="normal"><a href="#__codelineno-32-38">38</a></span>
+<span class="normal"><a href="#__codelineno-32-39">39</a></span>
+<span class="normal"><a href="#__codelineno-32-40">40</a></span>
+<span class="normal"><a href="#__codelineno-32-41">41</a></span>
+<span class="normal"><a href="#__codelineno-32-42">42</a></span>
+<span class="normal"><a href="#__codelineno-32-43">43</a></span>
+<span class="normal"><a href="#__codelineno-32-44">44</a></span>
+<span class="normal"><a href="#__codelineno-32-45">45</a></span>
+<span class="normal"><a href="#__codelineno-32-46">46</a></span>
+<span class="normal"><a href="#__codelineno-32-47">47</a></span>
+<span class="normal"><a href="#__codelineno-32-48">48</a></span>
+<span class="normal"><a href="#__codelineno-32-49">49</a></span>
+<span class="normal"><a href="#__codelineno-32-50">50</a></span>
+<span class="normal"><a href="#__codelineno-32-51">51</a></span>
+<span class="normal"><a href="#__codelineno-32-52">52</a></span>
+<span class="normal"><a href="#__codelineno-32-53">53</a></span>
+<span class="normal"><a href="#__codelineno-32-54">54</a></span>
+<span class="normal"><a href="#__codelineno-32-55">55</a></span>
+<span class="normal"><a href="#__codelineno-32-56">56</a></span>
+<span class="normal"><a href="#__codelineno-32-57">57</a></span>
+<span class="normal"><a href="#__codelineno-32-58">58</a></span>
+<span class="normal"><a href="#__codelineno-32-59">59</a></span>
+<span class="normal"><a href="#__codelineno-32-60">60</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1"></a><span class="c1"># Copyright Istio Authors</span><span class="w"></span>
+<a id="__codelineno-32-2" name="__codelineno-32-2"></a><span class="c1">#</span><span class="w"></span>
+<a id="__codelineno-32-3" name="__codelineno-32-3"></a><span class="c1">#   Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span><span class="w"></span>
+<a id="__codelineno-32-4" name="__codelineno-32-4"></a><span class="c1">#   you may not use this file except in compliance with the License.</span><span class="w"></span>
+<a id="__codelineno-32-5" name="__codelineno-32-5"></a><span class="c1">#   You may obtain a copy of the License at</span><span class="w"></span>
+<a id="__codelineno-32-6" name="__codelineno-32-6"></a><span class="c1">#</span><span class="w"></span>
+<a id="__codelineno-32-7" name="__codelineno-32-7"></a><span class="c1">#       http://www.apache.org/licenses/LICENSE-2.0</span><span class="w"></span>
+<a id="__codelineno-32-8" name="__codelineno-32-8"></a><span class="c1">#</span><span class="w"></span>
+<a id="__codelineno-32-9" name="__codelineno-32-9"></a><span class="c1">#   Unless required by applicable law or agreed to in writing, software</span><span class="w"></span>
+<a id="__codelineno-32-10" name="__codelineno-32-10"></a><span class="c1">#   distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span><span class="w"></span>
+<a id="__codelineno-32-11" name="__codelineno-32-11"></a><span class="c1">#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span><span class="w"></span>
+<a id="__codelineno-32-12" name="__codelineno-32-12"></a><span class="c1">#   See the License for the specific language governing permissions and</span><span class="w"></span>
+<a id="__codelineno-32-13" name="__codelineno-32-13"></a><span class="c1">#   limitations under the License.</span><span class="w"></span>
+<a id="__codelineno-32-14" name="__codelineno-32-14"></a>
+<a id="__codelineno-32-15" name="__codelineno-32-15"></a><span class="c1">##################################################################################################</span><span class="w"></span>
+<a id="__codelineno-32-16" name="__codelineno-32-16"></a><span class="c1"># httpbin service</span><span class="w"></span>
+<a id="__codelineno-32-17" name="__codelineno-32-17"></a><span class="c1">##################################################################################################</span><span class="w"></span>
+<a id="__codelineno-32-18" name="__codelineno-32-18"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-32-19" name="__codelineno-32-19"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ServiceAccount</span><span class="w"></span>
+<a id="__codelineno-32-20" name="__codelineno-32-20"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-21" name="__codelineno-32-21"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-2</span><span class="w"></span>
+<a id="__codelineno-32-22" name="__codelineno-32-22"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-32-23" name="__codelineno-32-23"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-32-24" name="__codelineno-32-24"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span><span class="w"></span>
+<a id="__codelineno-32-25" name="__codelineno-32-25"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-26" name="__codelineno-32-26"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-2</span><span class="w"></span>
+<a id="__codelineno-32-27" name="__codelineno-32-27"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-28" name="__codelineno-32-28"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-2</span><span class="w"></span>
+<a id="__codelineno-32-29" name="__codelineno-32-29"></a><span class="w">    </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-2</span><span class="w"></span>
+<a id="__codelineno-32-30" name="__codelineno-32-30"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-31" name="__codelineno-32-31"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-32" name="__codelineno-32-32"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
+<a id="__codelineno-32-33" name="__codelineno-32-33"></a><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span><span class="w"></span>
+<a id="__codelineno-32-34" name="__codelineno-32-34"></a><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+<a id="__codelineno-32-35" name="__codelineno-32-35"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-36" name="__codelineno-32-36"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-2</span><span class="w"></span>
+<a id="__codelineno-32-37" name="__codelineno-32-37"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-32-38" name="__codelineno-32-38"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span><span class="w"></span>
+<a id="__codelineno-32-39" name="__codelineno-32-39"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span><span class="w"></span>
+<a id="__codelineno-32-40" name="__codelineno-32-40"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-41" name="__codelineno-32-41"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-2</span><span class="w"></span>
+<a id="__codelineno-32-42" name="__codelineno-32-42"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-43" name="__codelineno-32-43"></a><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<a id="__codelineno-32-44" name="__codelineno-32-44"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-45" name="__codelineno-32-45"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-46" name="__codelineno-32-46"></a><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-2</span><span class="w"></span>
+<a id="__codelineno-32-47" name="__codelineno-32-47"></a><span class="w">      </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-32-48" name="__codelineno-32-48"></a><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-49" name="__codelineno-32-49"></a><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-50" name="__codelineno-32-50"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-51" name="__codelineno-32-51"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-2</span><span class="w"></span>
+<a id="__codelineno-32-52" name="__codelineno-32-52"></a><span class="w">        </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-32-53" name="__codelineno-32-53"></a><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-54" name="__codelineno-32-54"></a><span class="w">      </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-2</span><span class="w"></span>
+<a id="__codelineno-32-55" name="__codelineno-32-55"></a><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-56" name="__codelineno-32-56"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker.io/kennethreitz/httpbin</span><span class="w"></span>
+<a id="__codelineno-32-57" name="__codelineno-32-57"></a><span class="w">        </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">IfNotPresent</span><span class="w"></span>
+<a id="__codelineno-32-58" name="__codelineno-32-58"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin</span><span class="w"></span>
+<a id="__codelineno-32-59" name="__codelineno-32-59"></a><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-32-60" name="__codelineno-32-60"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+</details>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>kubectl apply -f httpbin-2.yaml
+</code></pre></div>
+<h3 id="apply-the-routing-configuration-virtualservice">Apply the routing configuration: <code>VirtualService</code><a class="headerlink" href="#apply-the-routing-configuration-virtualservice" title="Permanent link">&para;</a></h3>
+<p>If you recall, back in the Envoy lab, you wrote Envoy routing configuration involving path prefixes and rewrites.</p>
+<p>In Istio, the routing configuration is exposed as a Kubernetes custom resource of kind <code>VirtualService</code>.</p>
+<p>Study the manifest shown below:</p>
+<div class="admonition tldr">
+<p class="admonition-title">virtual-service.yaml</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-34-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-34-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-34-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-34-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-34-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-34-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-34-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-34-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-34-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-34-10">10</a></span>
+<span class="normal"><a href="#__codelineno-34-11">11</a></span>
+<span class="normal"><a href="#__codelineno-34-12">12</a></span>
+<span class="normal"><a href="#__codelineno-34-13">13</a></span>
+<span class="normal"><a href="#__codelineno-34-14">14</a></span>
+<span class="normal"><a href="#__codelineno-34-15">15</a></span>
+<span class="normal"><a href="#__codelineno-34-16">16</a></span>
+<span class="normal"><a href="#__codelineno-34-17">17</a></span>
+<span class="normal"><a href="#__codelineno-34-18">18</a></span>
+<span class="normal"><a href="#__codelineno-34-19">19</a></span>
+<span class="normal"><a href="#__codelineno-34-20">20</a></span>
+<span class="normal"><a href="#__codelineno-34-21">21</a></span>
+<span class="normal"><a href="#__codelineno-34-22">22</a></span>
+<span class="normal"><a href="#__codelineno-34-23">23</a></span>
+<span class="normal"><a href="#__codelineno-34-24">24</a></span>
+<span class="normal"><a href="#__codelineno-34-25">25</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-34-2" name="__codelineno-34-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span><span class="w"></span>
+<a id="__codelineno-34-3" name="__codelineno-34-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VirtualService</span><span class="w"></span>
+<a id="__codelineno-34-4" name="__codelineno-34-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-5" name="__codelineno-34-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-vs</span><span class="w"></span>
+<a id="__codelineno-34-6" name="__codelineno-34-6"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-7" name="__codelineno-34-7"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-8" name="__codelineno-34-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin.default.svc.cluster.local</span><span class="w"></span>
+<a id="__codelineno-34-9" name="__codelineno-34-9"></a><span class="w">  </span><span class="nt">http</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-10" name="__codelineno-34-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">match</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-11" name="__codelineno-34-11"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uri</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-12" name="__codelineno-34-12"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/one&quot;</span><span class="w"></span>
+<a id="__codelineno-34-13" name="__codelineno-34-13"></a><span class="w">    </span><span class="nt">rewrite</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-14" name="__codelineno-34-14"></a><span class="w">      </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/ip&quot;</span><span class="w"></span>
+<a id="__codelineno-34-15" name="__codelineno-34-15"></a><span class="w">    </span><span class="nt">route</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-16" name="__codelineno-34-16"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-17" name="__codelineno-34-17"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin.default.svc.cluster.local</span><span class="w"></span>
+<a id="__codelineno-34-18" name="__codelineno-34-18"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">match</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-19" name="__codelineno-34-19"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uri</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-20" name="__codelineno-34-20"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/two&quot;</span><span class="w"></span>
+<a id="__codelineno-34-21" name="__codelineno-34-21"></a><span class="w">    </span><span class="nt">rewrite</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-22" name="__codelineno-34-22"></a><span class="w">      </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/user-agent&quot;</span><span class="w"></span>
+<a id="__codelineno-34-23" name="__codelineno-34-23"></a><span class="w">    </span><span class="nt">route</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-24" name="__codelineno-34-24"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-34-25" name="__codelineno-34-25"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-2.default.svc.cluster.local</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<p>It states: when making requests to the <code>httpbin</code> host, route the request to either the first destination (<code>httpbin</code>) or the second (<code>httpbin-2</code>), as a function of the path prefix in the request URL.</p>
+<p>Apply the manifest:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>kubectl apply -f virtual-service.yaml
+</code></pre></div>
+<h3 id="verify">Verify<a class="headerlink" href="#verify" title="Permanent link">&para;</a></h3>
+<p>Verify that requests to <code>/one</code> are routed to the <code>httpbin</code> deployment's <code>/ip</code> endpoint, and that requests to <code>/two</code> are routed to the <code>httpbin-2</code> deployment's <code>/user-agent</code> endpoint.</p>
+<ol>
+<li>
+<p>Tail the logs of the <code>httpbin</code> pod's <code>istio-proxy</code> container:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="nv">HTTPBIN_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>httpbin -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>kubectl logs --follow <span class="nv">$HTTPBIN_POD</span> -c istio-proxy
+</code></pre></div>
+</li>
+<li>
+<p>In a separate terminal, tail the <code>httpbin-2</code> pod's logs:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="nv">HTTPBIN2_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>httpbin-2 -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>kubectl logs --follow <span class="nv">$HTTPBIN2_POD</span> -c istio-proxy
+</code></pre></div>
+</li>
+<li>
+<p>Separately, make repeated calls to the <code>/one</code> endpoint from the <code>sleep</code> pod:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="nv">SLEEP_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>sleep -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+<a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl httpbin:8000/one
+</code></pre></div>
+</li>
+<li>
+<p>Likewise, make repeated calls to the <code>/two</code> endpoint from the <code>sleep</code> pod:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="nv">SLEEP_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>sleep -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+<a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl httpbin:8000/two
+</code></pre></div>
+</li>
+</ol>
+<h2 id="using-an-ingress-gateway">Using an Ingress Gateway<a class="headerlink" href="#using-an-ingress-gateway" title="Permanent link">&para;</a></h2>
+<p>Rather than configure routing for internal mesh clients, it's more interesting to configure an ingress gateway.</p>
+<p>Indeed when installing Istio, an ingress gateway was provisioned alongside <code>istiod</code>.  Verify this:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>kubectl get pod -n istio-system
+</code></pre></div>
+<p>Note that the gateway has a corresponding LoadBalancer type service:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>kubectl get svc -n istio-system
+</code></pre></div>
+<p>Capture the gateway's external IP address:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="nv">GATEWAY_IP</span><span class="o">=</span><span class="k">$(</span>kubectl get service istio-ingressgateway -n istio-system -ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
+</code></pre></div>
+<p>Visit the gateway IP address in your web browser; you should get back a "connection refused" message.</p>
+<h3 id="configure-the-gateway">Configure the gateway<a class="headerlink" href="#configure-the-gateway" title="Permanent link">&para;</a></h3>
+<p>To expose HTTP port 80, apply the following gateway manifest:</p>
+<div class="admonition tldr">
+<p class="admonition-title">gateway.yaml</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-43-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-43-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-43-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-43-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-43-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-43-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-43-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-43-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-43-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-43-10">10</a></span>
+<span class="normal"><a href="#__codelineno-43-11">11</a></span>
+<span class="normal"><a href="#__codelineno-43-12">12</a></span>
+<span class="normal"><a href="#__codelineno-43-13">13</a></span>
+<span class="normal"><a href="#__codelineno-43-14">14</a></span>
+<span class="normal"><a href="#__codelineno-43-15">15</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-43-1" name="__codelineno-43-1"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-43-2" name="__codelineno-43-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span><span class="w"></span>
+<a id="__codelineno-43-3" name="__codelineno-43-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Gateway</span><span class="w"></span>
+<a id="__codelineno-43-4" name="__codelineno-43-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-43-5" name="__codelineno-43-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">frontend-gateway</span><span class="w"></span>
+<a id="__codelineno-43-6" name="__codelineno-43-6"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-43-7" name="__codelineno-43-7"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-43-8" name="__codelineno-43-8"></a><span class="w">    </span><span class="nt">istio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingressgateway</span><span class="w"></span>
+<a id="__codelineno-43-9" name="__codelineno-43-9"></a><span class="w">  </span><span class="nt">servers</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-43-10" name="__codelineno-43-10"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-43-11" name="__codelineno-43-11"></a><span class="w">        </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+<a id="__codelineno-43-12" name="__codelineno-43-12"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
+<a id="__codelineno-43-13" name="__codelineno-43-13"></a><span class="w">        </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HTTP</span><span class="w"></span>
+<a id="__codelineno-43-14" name="__codelineno-43-14"></a><span class="w">      </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-43-15" name="__codelineno-43-15"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<p>The wildcard value for the <code>hosts</code> field ensures a match if the request is made directly to the "raw" gateway IP address.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>kubectl apply -f gateway.yaml
+</code></pre></div>
+<p>Try once more to access the gateway IP address. It should no longer return "connection refused". Instead you should get a 404 (not found).</p>
+<h3 id="bind-the-virtual-service-to-the-gateway">Bind the virtual service to the gateway<a class="headerlink" href="#bind-the-virtual-service-to-the-gateway" title="Permanent link">&para;</a></h3>
+<p>Study the following manifest:</p>
+<div class="admonition tldr">
+<p class="admonition-title">gw-virtual-service.yaml</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-45-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-45-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-45-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-45-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-45-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-45-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-45-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-45-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-45-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-45-10">10</a></span>
+<span class="normal"><a href="#__codelineno-45-11">11</a></span>
+<span class="normal"><a href="#__codelineno-45-12">12</a></span>
+<span class="normal"><a href="#__codelineno-45-13">13</a></span>
+<span class="normal"><a href="#__codelineno-45-14">14</a></span>
+<span class="normal"><a href="#__codelineno-45-15">15</a></span>
+<span class="normal"><a href="#__codelineno-45-16">16</a></span>
+<span class="normal"><a href="#__codelineno-45-17">17</a></span>
+<span class="normal"><a href="#__codelineno-45-18">18</a></span>
+<span class="normal"><a href="#__codelineno-45-19">19</a></span>
+<span class="normal"><a href="#__codelineno-45-20">20</a></span>
+<span class="normal"><a href="#__codelineno-45-21">21</a></span>
+<span class="normal"><a href="#__codelineno-45-22">22</a></span>
+<span class="normal"><a href="#__codelineno-45-23">23</a></span>
+<span class="normal"><a href="#__codelineno-45-24">24</a></span>
+<span class="normal"><a href="#__codelineno-45-25">25</a></span>
+<span class="normal"><a href="#__codelineno-45-26">26</a></span>
+<span class="normal"><a href="#__codelineno-45-27">27</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-45-1" name="__codelineno-45-1"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-45-2" name="__codelineno-45-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span><span class="w"></span>
+<a id="__codelineno-45-3" name="__codelineno-45-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VirtualService</span><span class="w"></span>
+<a id="__codelineno-45-4" name="__codelineno-45-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-5" name="__codelineno-45-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-vs</span><span class="w"></span>
+<a id="__codelineno-45-6" name="__codelineno-45-6"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-7" name="__codelineno-45-7"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-8" name="__codelineno-45-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
+<a id="__codelineno-45-9" name="__codelineno-45-9"></a><span class="w">  </span><span class="nt">gateways</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-10" name="__codelineno-45-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">frontend-gateway</span><span class="w"></span>
+<a id="__codelineno-45-11" name="__codelineno-45-11"></a><span class="w">  </span><span class="nt">http</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-12" name="__codelineno-45-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">match</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-13" name="__codelineno-45-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uri</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-14" name="__codelineno-45-14"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/one&quot;</span><span class="w"></span>
+<a id="__codelineno-45-15" name="__codelineno-45-15"></a><span class="w">    </span><span class="nt">rewrite</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-16" name="__codelineno-45-16"></a><span class="w">      </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/ip&quot;</span><span class="w"></span>
+<a id="__codelineno-45-17" name="__codelineno-45-17"></a><span class="w">    </span><span class="nt">route</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-18" name="__codelineno-45-18"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-19" name="__codelineno-45-19"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin.default.svc.cluster.local</span><span class="w"></span>
+<a id="__codelineno-45-20" name="__codelineno-45-20"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">match</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-21" name="__codelineno-45-21"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uri</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-22" name="__codelineno-45-22"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/two&quot;</span><span class="w"></span>
+<a id="__codelineno-45-23" name="__codelineno-45-23"></a><span class="w">    </span><span class="nt">rewrite</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-24" name="__codelineno-45-24"></a><span class="w">      </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/user-agent&quot;</span><span class="w"></span>
+<a id="__codelineno-45-25" name="__codelineno-45-25"></a><span class="w">    </span><span class="nt">route</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-26" name="__codelineno-45-26"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-45-27" name="__codelineno-45-27"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpbin-2.default.svc.cluster.local</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<p>Note:</p>
+<ol>
+<li>The additional <code>gateways</code> field ensures that the virtual service binds to the ingress gateway.</li>
+<li>The <code>hosts</code> field has been relaxed to match any request coming in through the load balancer.</li>
+</ol>
+<p>Apply the manifest:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a>kubectl apply -f gw-virtual-service.yaml
+</code></pre></div>
+<h3 id="test-the-endpoints">Test the endpoints<a class="headerlink" href="#test-the-endpoints" title="Permanent link">&para;</a></h3>
+<p>The raw gateway IP address will still return a 404.</p>
+<p>However, the <code>/one</code> and <code>/two</code> endpoints should now be functional, and return the ip and user-agent responses from each httpbin deployment, respectively.</p>
+<h3 id="inspect-the-gateways-envoy-configuration">Inspect the Gateway's Envoy configuration<a class="headerlink" href="#inspect-the-gateways-envoy-configuration" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>Review the listeners configuration.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>istioctl proxy-config listener deploy/istio-ingressgateway.istio-system
+</code></pre></div>
+</li>
+<li>
+<p>Next study the routes configuration.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>istioctl proxy-config route deploy/istio-ingressgateway.istio-system
+</code></pre></div>
+</li>
+<li>
+<p>Zero-in on the routes configuration named <code>http.8080</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>istioctl proxy-config route deploy/istio-ingressgateway.istio-system --name http.8080 -o yaml
+</code></pre></div>
+</li>
+</ol>
+<p>It's worthwhile taking a close look at the output. Below I have removed some of the noise to highlight the most salient parts:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">routes</span><span class="p p-Indicator">:</span><span class="w"></span>
+<a id="__codelineno-50-3" name="__codelineno-50-3" href="#__codelineno-50-3"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<a id="__codelineno-50-4" name="__codelineno-50-4" href="#__codelineno-50-4"></a><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">match</span><span class="p p-Indicator">:</span><span class="w"></span>
+<a id="__codelineno-50-5" name="__codelineno-50-5" href="#__codelineno-50-5"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<a id="__codelineno-50-6" name="__codelineno-50-6" href="#__codelineno-50-6"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">prefix</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/one</span><span class="w"></span>
+<a id="__codelineno-50-7" name="__codelineno-50-7" href="#__codelineno-50-7"></a><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<a id="__codelineno-50-8" name="__codelineno-50-8" href="#__codelineno-50-8"></a><span class="w">      </span><span class="nt">route</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-50-9" name="__codelineno-50-9" href="#__codelineno-50-9"></a><span class="w">        </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">outbound|8000||httpbin.default.svc.cluster.local</span><span class="w"></span>
+<a id="__codelineno-50-10" name="__codelineno-50-10" href="#__codelineno-50-10"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<a id="__codelineno-50-11" name="__codelineno-50-11" href="#__codelineno-50-11"></a><span class="w">        </span><span class="nt">prefixRewrite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/ip</span><span class="w"></span>
+<a id="__codelineno-50-12" name="__codelineno-50-12" href="#__codelineno-50-12"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<a id="__codelineno-50-13" name="__codelineno-50-13" href="#__codelineno-50-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<a id="__codelineno-50-14" name="__codelineno-50-14" href="#__codelineno-50-14"></a><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">match</span><span class="p p-Indicator">:</span><span class="w"></span>
+<a id="__codelineno-50-15" name="__codelineno-50-15" href="#__codelineno-50-15"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<a id="__codelineno-50-16" name="__codelineno-50-16" href="#__codelineno-50-16"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">prefix</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/two</span><span class="w"></span>
+<a id="__codelineno-50-17" name="__codelineno-50-17" href="#__codelineno-50-17"></a><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<a id="__codelineno-50-18" name="__codelineno-50-18" href="#__codelineno-50-18"></a><span class="w">      </span><span class="nt">route</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-50-19" name="__codelineno-50-19" href="#__codelineno-50-19"></a><span class="w">        </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">outbound|8000||httpbin-2.default.svc.cluster.local</span><span class="w"></span>
+<a id="__codelineno-50-20" name="__codelineno-50-20" href="#__codelineno-50-20"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<a id="__codelineno-50-21" name="__codelineno-50-21" href="#__codelineno-50-21"></a><span class="w">        </span><span class="nt">prefixRewrite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/user-agent</span><span class="w"></span>
+<a id="__codelineno-50-22" name="__codelineno-50-22" href="#__codelineno-50-22"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+</code></pre></div>
+<div class="admonition check">
+<p class="admonition-title">Challenge</p>
+<p>Review the hand-written configuration from the previous lab.
+How does it compare to the above generated configuration?</p>
+</div>
+<h2 id="beyond-traffic-management">Beyond traffic management<a class="headerlink" href="#beyond-traffic-management" title="Permanent link">&para;</a></h2>
+<p>The ability to control load-balancing and routing are but one of the features of Istio.</p>
+<p>Istio supports additional and important cross-cutting concerns, including <a href="https://istio.io/latest/docs/concepts/security/" target="_blank">security</a> and <a href="https://istio.io/latest/docs/tasks/observability/" target="_blank">observability</a>.</p>
+<h3 id="security">Security<a class="headerlink" href="#security" title="Permanent link">&para;</a></h3>
+<p>With Istio, deployed workloads are automatically assigned a unique identity.</p>
+<p>Istio provides the <a href="https://istio.io/latest/docs/reference/config/security/peer_authentication/" target="_blank"><code>PeerAuthentication</code></a> CRD to control whether traffic within the mesh require mutual TLS exclusively, or whether it should be permissive.</p>
+<p>The <a href="https://istio.io/latest/docs/reference/config/security/request_authentication/" target="_blank"><code>RequestAuthentication</code></a> CRD is used to turn on parsing and validation of JWT tokens.</p>
+<p>Workload and user identity are the the basis for authentication.</p>
+<p>The <a href="https://istio.io/latest/docs/reference/config/security/authorization-policy/" target="_blank"><code>AuthorizationPolicy</code></a> CRD provides powerful mechanism for applying authorization policies based on either workload or user identity, as well as arbitrary information from the request, such as specific request headers, JWT claims, and more.</p>
+<h3 id="explore-observability">Explore observability<a class="headerlink" href="#explore-observability" title="Permanent link">&para;</a></h3>
+<p>In a microservices architecture, observability is necessary to help us reason about our systems, how calls traverse our microservices, to identify bottlenecks, and more.</p>
+<p>The services in an Istio mesh are automatically observable, without adding any burden on developers.</p>
+<h4 id="deploy-the-addons">Deploy the Addons<a class="headerlink" href="#deploy-the-addons" title="Permanent link">&para;</a></h4>
+<p>The Istio distribution provides addons for a number of systems that together provide observability for the service mesh:</p>
+<ul>
+<li><a href="https://zipkin.io/" target="_blank">Zipkin</a> or <a href="https://www.jaegertracing.io/" target="_blank">Jaeger</a> for distributed tracing</li>
+<li><a href="https://prometheus.io/" target="_blank">Prometheus</a> for metrics collection</li>
+<li><a href="https://grafana.com/" target="_blank">Grafana</a> provides dashboards for monitoring, using Prometheus as the data source</li>
+<li><a href="https://kiali.io/" target="_blank">Kiali</a> allows us to visualize the mesh</li>
+</ul>
+<p>These addons are located in the <code>samples/addons/</code> folder of the distribution.</p>
+<ol>
+<li>
+<p>Navigate to the addons directory</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a><span class="nb">cd</span> ~/istio-1.13.3/samples/addons
+</code></pre></div>
+</li>
+<li>
+<p>Deploy each addon:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a>kubectl apply -f extras/zipkin.yaml
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>kubectl apply -f prometheus.yaml
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a>kubectl apply -f grafana.yaml
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a>kubectl apply -f kiali.yaml
+</code></pre></div>
+</li>
+<li>
+<p>Verify that the <code>istio-system</code> namespace is now running additional workloads for each of the addons.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a>kubectl get pod -n istio-system
+</code></pre></div>
+</li>
+</ol>
+<h4 id="generate-a-load">Generate a load<a class="headerlink" href="#generate-a-load" title="Permanent link">&para;</a></h4>
+<p>Recall the ingress gateway IP address from the previous section:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a><span class="nv">GATEWAY_IP</span><span class="o">=</span><span class="k">$(</span>kubectl get service istio-ingressgateway -n istio-system -ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
+</code></pre></div>
+<p>In order to have something to observe, we need to generate a load on our system.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="k">for</span> <span class="o">((</span><span class="nv">i</span><span class="o">=</span><span class="m">1</span><span class="p">;</span>i&lt;<span class="o">=</span><span class="m">600</span><span class="p">;</span>i++<span class="o">))</span><span class="p">;</span> <span class="k">do</span> curl <span class="nv">$GATEWAY_IP</span>/one<span class="p">;</span> curl <span class="nv">$GATEWAY_IP</span>/two<span class="p">;</span> sleep <span class="m">1</span><span class="p">;</span> <span class="k">done</span>
+</code></pre></div>
+<h4 id="explore-the-dashboards">Explore the dashboards<a class="headerlink" href="#explore-the-dashboards" title="Permanent link">&para;</a></h4>
+<p>The <code>istioctl</code> CLI provides convenience commands for accessing the web UIs for each dashboard.</p>
+<p>Take a moment to review the help information for the <code>istioctl dashboard</code> command:</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>istioctl dashboard --help
+</code></pre></div>
+<p>Proceed to explore each of the dashboards using the above command.
+Your instructor will give a demonstration of each dashboard, time permitting.</p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>In comparison to having to configure Envoy proxies manually, Istio provides a mechanism to configure Envoy proxies with much less effort.
+It draws on information from the environment: awareness of running workloads (service discovery) provides the inputs necessary to derive Envoy's clusters and listeners configurations automatically.</p>
+<p>Istio Custom Resource Definitions complement and complete the picture by providing mechanisms to configure routing rules, authorization policies and more.</p>
+<p>Istio goes one step further: it dynamically reconfigures the Envoy proxies any time that services are scaled, or added to and removed from the mesh.</p>
+<p>Istio and Envoy together provide a foundation for running microservices at scale.</p>
+<p>In the next lab, we turn our attention to Web Assembly, a mechanism for extending and customizing the behavior of the Envoy proxies running in the mesh.</p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../envoy/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Introduction to Envoy" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Introduction to Envoy
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../wasm/" class="md-footer__link md-footer__link--next" aria-label="Next: Extending Envoy and Istio with Wasm" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Extending Envoy and Istio with Wasm
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      © 2022 Tetrate
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.top", "navigation.instant", "navigation.tracking", "content.code.annotate"], "search": "../assets/javascripts/workers/search.5e67fbfe.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c44cc438.min.js"></script>
+      
+    
+  </body>
+</html>
